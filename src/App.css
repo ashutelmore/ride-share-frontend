@@ -36,3 +36,10 @@
     transform: rotate(360deg);
   }
 }
+
+
+.active{
+  background-color: rgba(128, 128, 128, 0.566);
+  color: white;
+
+}
