@@ -117,7 +117,7 @@ export default function Customer() {
                                         <td class="px-5 py-5 bg-white text-sm">
                                             <button
                                                 class="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-l">
-                                                Edit
+                                                View/Edit
                                             </button>
                                             <button
                                                 class="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-r">

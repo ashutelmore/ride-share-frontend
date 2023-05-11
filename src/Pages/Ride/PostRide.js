@@ -32,45 +32,45 @@ export default function PostRide() {
                 <div className=" pb-12">
                     <div className=" grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                         <div className="sm:col-span-3">
-                            <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-gray-900">
+                            <label htmlFor="-location" className="block text-sm font-medium leading-6 text-gray-900">
                                 Start Location
                             </label>
                             <div className="mt-2">
                                 <input
                                     type="text"
-                                    name="first-name"
-                                    id="first-name"
-                                    autoComplete="given-name"
+                                    name="start-location"
+                                    id="start-location"
+                                    // autoComplete="given-name"
                                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                 />
                             </div>
                         </div>
 
                         <div className="sm:col-span-3">
-                            <label htmlFor="last-name" className="block text-sm font-medium leading-6 text-gray-900">
+                            <label htmlFor="end-loaction" className="block text-sm font-medium leading-6 text-gray-900">
                                 End Location
                             </label>
                             <div className="mt-2">
                                 <input
                                     type="text"
-                                    name="last-name"
-                                    id="last-name"
-                                    autoComplete="family-name"
+                                    name="end-loaction"
+                                    id="end-loaction"
+                                    // autoComplete="family-name"
                                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                 />
                             </div>
                         </div>
 
                         <div className="sm:col-span-4">
-                            <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
+                            <label htmlFor="distance" className="block text-sm font-medium leading-6 text-gray-900">
                                 Distance
                             </label>
                             <div className="mt-2">
                                 <input
-                                    id="email"
-                                    name="email"
-                                    type="email"
-                                    autoComplete="email"
+                                    id="distance"
+                                    name="distance"
+                                    type="distance"
+                                    // autoComplete="email"
                                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                 />
                             </div>

@@ -6,6 +6,7 @@ import car1 from './../../assets/car1.png'
 import logogg from './../../assets/logogg.png'
 import moped from './../../assets/moped.1.png'
 import bg from './../../assets/bg.jpg'
+import { Link } from 'react-router-dom'
 const features = [
   {
     name: 'Ride Sharing',
@@ -93,12 +94,12 @@ export default function Home() {
                   </div>
                 </div>
 
-                <a
-                  href="#"
+                <Link
+                  to={'/SearchRide'}
                   className="inline-block rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-center font-medium text-white hover:bg-indigo-700"
                 >
                   Book Now
-                </a>
+                </Link>
               </div>
             </div>
           </div>

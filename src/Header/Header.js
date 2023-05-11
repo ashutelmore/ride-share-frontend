@@ -1,7 +1,10 @@
-import { Fragment } from 'react'
+import { Fragment, useState } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { Link, NavLink } from 'react-router-dom'
+import logogg from './../assets/logogg.png'
+
+import { useAuth } from '../providers/auth'
 
 const user = {
     name: 'Tom Cook',
@@ -21,7 +24,6 @@ const navigation = [
 ]
 const userNavigation = [
     { name: 'Your Profile', href: '/profile' },
-    { name: 'Settings', href: '#' },
     { name: 'Sign out', href: '#' },
 ]
 
@@ -30,16 +32,18 @@ function classNames(...classes) {
 }
 
 export default function Header() {
+
+    const auth = useAuth()
+
+    const logout = () => {
+        localStorage.removeItem('_id');
+        auth.setUser({})
+    };
+
+
+
     return (
         <>
-            {/*
-        This example requires updating your template:
-
-        ```
-        <html class="h-full bg-gray-100">
-        <body class="h-full">
-        ```
-      */}
             <div className="min-h-full">
                 <Disclosure as="nav" className="bg-gray-800">
                     {({ open }) => (
@@ -50,7 +54,7 @@ export default function Header() {
                                         <div className="flex-shrink-0">
                                             <img
                                                 className="h-8 w-8"
-                                                src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
+                                                src={logogg}
                                                 alt="Your Company"
                                             />
                                         </div>
@@ -87,18 +91,42 @@ export default function Header() {
                                             {/* Profile dropdown */}
                                             <Menu as="div" className="relative ml-3">
                                                 <div>
-                                                    <Menu.Button className="flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none ">
-                                                        <span className="sr-only">Open user menu</span>
-                                                        <button
-                                                            // key={item.name}
-                                                            // to={item.href}
-                                                            className={classNames(' text-gray-300 bg-gray-700 text-white',
-                                                                'rounded-md px-3 py-2 text-sm font-medium '
-                                                            )}
-                                                        >
-                                                            User Name
-                                                        </button>
-                                                    </Menu.Button>
+                                                    {
+                                                        !auth.user._id ?
+                                                            <>
+                                                                <Link
+                                                                    // key={item.name}
+                                                                    to={'/register'}
+                                                                    className={classNames(' text-gray-300  text-white',
+                                                                        'rounded-md px-3 py-2 text-sm font-medium '
+                                                                    )}
+                                                                >
+                                                                    Register
+                                                                </Link>
+                                                                <Link
+                                                                    // key={item.name}
+                                                                    to={'/login'}
+                                                                    className={classNames(' text-gray-300 bg-gray-700 text-white',
+                                                                        'rounded-md px-3 py-2 text-sm font-medium '
+                                                                    )}
+                                                                >
+                                                                    Login
+                                                                </Link>
+                                                            </>
+                                                            :
+                                                            <Menu.Button className="flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none ">
+                                                                <span className="sr-only">Open user menu</span>
+                                                                <button
+                                                                    // key={item.name}
+                                                                    // to={item.href}
+                                                                    className={classNames(' text-gray-300 bg-gray-700 text-white',
+                                                                        'rounded-md px-3 py-2 text-sm font-medium '
+                                                                    )}
+                                                                >
+                                                                    {auth.user.name}
+                                                                </button>
+                                                            </Menu.Button>
+                                                    }
                                                 </div>
                                                 <Transition
                                                     as={Fragment}
@@ -109,22 +137,30 @@ export default function Header() {
                                                     leaveFrom="transform opacity-100 scale-100"
                                                     leaveTo="transform opacity-0 scale-95"
                                                 >
+
+
                                                     <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                                                        {userNavigation.map((item) => (
-                                                            <Menu.Item key={item.name}>
-                                                                {({ active }) => (
-                                                                    <Link
-                                                                        to={item.href}
-                                                                        className={classNames(
-                                                                            active ? 'bg-gray-100' : '',
-                                                                            'block px-4 py-2 text-sm text-gray-700'
-                                                                        )}
-                                                                    >
-                                                                        {item.name}
-                                                                    </Link>
+                                                        <Menu.Item >
+                                                            <Link
+                                                                to='/profile'
+                                                                className={classNames(
+                                                                    'block px-4 py-2 text-sm text-gray-700'
                                                                 )}
-                                                            </Menu.Item>
-                                                        ))}
+                                                            >
+                                                                Profile
+                                                            </Link>
+                                                        </Menu.Item>
+                                                        <Menu.Item >
+                                                            <button
+                                                                to='/profile'
+                                                                className={classNames(
+                                                                    'block px-4 py-2 text-sm text-gray-700'
+                                                                )}
+                                                                onClick={logout}
+                                                            >
+                                                                Logout
+                                                            </button>
+                                                        </Menu.Item>
                                                     </Menu.Items>
                                                 </Transition>
                                             </Menu>
@@ -163,33 +199,58 @@ export default function Header() {
                                 </div>
                                 <div className="border-t border-gray-700 pb-3 pt-4">
                                     <div className="flex items-center px-5">
-                                        <div className="flex-shrink-0">
-                                            <img className="h-10 w-10 rounded-full" src={user.imageUrl} alt="" />
-                                        </div>
-                                        <div className="ml-3">
-                                            <div className="text-base font-medium leading-none text-white">{user.name}</div>
-                                            <div className="text-sm font-medium leading-none text-gray-400">{user.email}</div>
-                                        </div>
-                                        <button
-                                            type="button"
-                                            className="ml-auto flex-shrink-0 rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-                                        >
-                                            <span className="sr-only">View notifications</span>
-                                            <BellIcon className="h-6 w-6" aria-hidden="true" />
-                                        </button>
+                                        {
+                                            !auth.user._id ?
+                                                <>
+                                                    <Link
+                                                        // key={item.name}
+                                                        to={'/register'}
+                                                        className={classNames(' text-gray-300  text-white',
+                                                            'rounded-md px-3 py-2 text-sm font-medium '
+                                                        )}
+                                                    >
+                                                        Register
+                                                    </Link>
+                                                    <Link
+                                                        // key={item.name}
+                                                        to={'/login'}
+                                                        className={classNames(' text-gray-300 bg-gray-700 text-white',
+                                                            'rounded-md px-3 py-2 text-sm font-medium '
+                                                        )}
+                                                    >
+                                                        Login
+                                                    </Link>
+                                                </>
+                                                :
+                                                <Menu.Button className="flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none ">
+                                                    <span className="sr-only">Open user menu</span>
+                                                    <button
+                                                        // key={item.name}
+                                                        // to={item.href}
+                                                        className={classNames(' text-gray-300 bg-gray-700 text-white',
+                                                            'rounded-md px-3 py-2 text-sm font-medium '
+                                                        )}
+                                                    >
+                                                        {auth.user.name}
+                                                    </button>
+                                                </Menu.Button>
+                                        }
                                     </div>
-                                    <div className="mt-3 space-y-1 px-2">
-                                        {userNavigation.map((item) => (
-                                            <Disclosure.Button
-                                                key={item.name}
-                                                as="a"
-                                                href={item.href}
-                                                className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
-                                            >
-                                                {item.name}
-                                            </Disclosure.Button>
-                                        ))}
-                                    </div>
+                                    {
+                                        false &&
+                                        <div className="mt-3 space-y-1 px-2">
+                                            {userNavigation.map((item) => (
+                                                <Disclosure.Button
+                                                    key={item.name}
+                                                    as="a"
+                                                    href={item.href}
+                                                    className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
+                                                >
+                                                    {item.name}
+                                                </Disclosure.Button>
+                                            ))}
+                                        </div>
+                                    }
                                 </div>
                             </Disclosure.Panel>
                         </>

@@ -15,7 +15,11 @@ import PostRide from "./Pages/Ride/PostRide";
 import AddVehicle from "./Pages/Ride/AddVehicle";
 import Vehicles from "./Pages/Ride/Vehicle";
 import Customer from "./Pages/Customer/Customer";
+import Register from "./Pages/Auth/Register";
+import Login from "./Pages/Auth/Login";
+import { useAuth } from "./providers/auth";
 const App = () => {
+  const auth = useAuth()
   const [open, setOpen] = useState(false);
   const handleClick = () => {
     setOpen(!open);
@@ -29,6 +33,34 @@ const App = () => {
         <div class="max-w-5xl mx-auto w-screen">
           <Routes>
 
+            <Route
+              path="login"
+              element={
+                auth.user._id ? (
+                  <Navigate replace to="/profile" />
+                ) : (
+                  <Login />
+                )
+              }
+            />
+            <Route
+              path="register"
+              element={
+                auth.user._id ? (
+                  <Navigate replace to="/profile" />
+                ) : (
+                  <Register />
+                )
+              }
+            />
+
+            <Route
+              path="profile"
+              element={
+                auth.user._id ? <Profile /> : <Navigate replace to="/login" />
+              }
+            />
+
             <Route path="/" element={<Home />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/about" element={<About />} />
@@ -39,6 +71,8 @@ const App = () => {
             <Route path="/customer" element={<Customer />} />
             <Route path="/postvehicle" element={<AddVehicle />} />
             <Route path="/vehicles" element={<Vehicles />} />
+            {/* <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<Login />} /> */}
             <Route path="*" element={<NotFound />} />
 
             {/* <Route
