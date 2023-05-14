@@ -18,6 +18,8 @@ import Customer from "./Pages/Customer/Customer";
 import Register from "./Pages/Auth/Register";
 import Login from "./Pages/Auth/Login";
 import { useAuth } from "./providers/auth";
+import Rides from "./Pages/Ride/Rides";
+import BookRide from "./Booking/BookRide";
 const App = () => {
   const auth = useAuth()
   const [open, setOpen] = useState(false);
@@ -30,7 +32,7 @@ const App = () => {
         <Header />
 
         {/* <VerticalNav /> */}
-        <div class="max-w-5xl mx-auto w-screen">
+        <div class=" mx-auto w-screen">
           <Routes>
 
             <Route
@@ -66,11 +68,13 @@ const App = () => {
             <Route path="/about" element={<About />} />
             <Route path="/details" element={<Details />} />
             <Route path="/booking" element={<Booking />} />
+            <Route path="/rides" element={<Rides />} />
             <Route path="/SearchRide" element={<SearchRide />} />
-            <Route path="/postride" element={<PostRide />} />
+            <Route path="/postride/:id?" element={<PostRide />} />
             <Route path="/customer" element={<Customer />} />
-            <Route path="/postvehicle" element={<AddVehicle />} />
+            <Route path="/postvehicle/:id?" element={<AddVehicle />} />
             <Route path="/vehicles" element={<Vehicles />} />
+            <Route path="/bookride/:id" element={<BookRide />} />
             {/* <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} /> */}
             <Route path="*" element={<NotFound />} />

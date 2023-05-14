@@ -6,7 +6,11 @@ import car1 from './../../assets/car1.png'
 import logogg from './../../assets/logogg.png'
 import moped from './../../assets/moped.1.png'
 import bg from './../../assets/bg.jpg'
+import tony from './../../Pages/Home/images/tonystark.png'
+import spidy from './../../Pages/Home/images/spidy.png'
+
 import { Link } from 'react-router-dom'
+import './style.css'
 const features = [
   {
     name: 'Ride Sharing',
@@ -31,181 +35,137 @@ const features = [
 export default function Home() {
   return (
     <>
-      <div className="relative overflow-hidden bg-white">
-        <div className="pb-80 pt-16 sm:pb-40 sm:pt-24 lg:pb-48 lg:pt-40">
-          <div className="relative mx-auto max-w-7xl px-4 sm:static sm:px-6 lg:px-8">
-            <div className="sm:max-w-lg">
-              <h1 className="font text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
-                Book Your Ride Now
-              </h1>
-              <p className="mt-4 text-xl text-gray-500">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nulla architecto commodi nesciunt fuga, natus tem
-              </p>
-            </div>
-            <div>
-              <div className="mt-10">
-                {/* Decorative image grid */}
-                <div
-                  aria-hidden="true"
-                  className="pointer-events-none lg:absolute lg:inset-y-0 lg:mx-auto lg:w-full lg:max-w-7xl"
-                >
-                  <div className="absolute transform sm:left-1/2 sm:top-0 sm:translate-x-8 lg:left-1/2 lg:top-1/2 lg:-translate-y-1/2 lg:translate-x-8">
-                    <div className="flex items-center space-x-6 lg:space-x-8">
-                      <div className="grid flex-shrink-0 grid-cols-1 gap-y-6 lg:gap-y-8">
-                        <div className="h-64 w-44 overflow-hidden rounded-lg sm:opacity-0 lg:opacity-100">
-                          <img
-                            src={moped}
-                            alt=""
-                            className="h-full w-full object-contain object-center"
-                          />
-                        </div>
-                        <div className="h-64 w-44 overflow-hidden rounded-lg">
-                          <img
-                            src={bike}
-                            alt=""
-                            className="h-full w-full object-contain object-center"
-                          />
-                        </div>
-                      </div>
-                      <div className="grid flex-shrink-0 grid-cols-1 gap-y-6 lg:gap-y-8">
-                        <div className="h-64 w-44 overflow-hidden rounded-lg">
-                          <img
-                            src={car1}
-                            alt=""
-                            className="h-full w-full object-contain object-center"
-                          />
-                        </div>
-                        <div className="h-64 w-44 overflow-hidden rounded-lg">
-                          <img
-                            src={bg}
-                            alt=""
-                            className="h-full w-full object-contain object-center"
-                          />
-                        </div>
-                        <div className="h-64 w-44 overflow-hidden rounded-lg">
-                          <img
-                            src={logogg}
-                            alt=""
-                            className="h-full w-full object-contain object-center"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+      <div class="main-container">
+        <div class="background-text">
+          <h2>book a <span>Ride now</span></h2>
+        </div>
 
-                <Link
-                  to={'/SearchRide'}
-                  className="inline-block rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-center font-medium text-white hover:bg-indigo-700"
-                >
-                  Book Now
-                </Link>
+      </div>
+
+
+      <section class="page-section" id="Book Ride"></section>
+      <div class="home-container">
+        <div class="home-content ">
+          <div class="inner-content w-1/2">
+            <h3>best in city</h3>
+            <h2>We here for you</h2>
+            <p></p>
+            <a href="./Ride_Booking/Booking.html" class="booknow">book now</a>
+          </div>
+          <div class="inner-content w-1/2">
+            <div class="contact-form">
+              <div class="form-heading">
+                <h1>find a ride</h1>
               </div>
+              <div class="form-fields">
+                <input type="text" placeholder="name" />
+                <input type="tel" placeholder="phone No." />
+                <input type="text" placeholder="Date" />
+                <input type="text" placeholder="Destination" />
+                <input type="text" placeholder="start" />
+                <input type="text" placeholder="end" />
+              </div>
+              <div class="submit">
+                <a href="./Ride_Booking/Booking.html">Find Ride</a>
+              </div>
+
             </div>
+
           </div>
         </div>
       </div>
-      <div className="bg-white py-24 sm:py-32">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="mx-auto max-w-2xl lg:text-center">
-            <h2 className="text-base font-semibold leading-7 text-indigo-600">Something heading</h2>
-            <p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-            </p>
-            <p className="mt-6 text-lg leading-8 text-gray-600">
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nulla architecto commodi nesciunt fuga, natus tem
-            </p>
+
+      <section class="page-section" id="Our Services"></section>
+      <section class="services">
+        <h2>Our Services</h2>
+        <div class="services-container">
+          <div class="service">
+            <h3>Ride Sharing</h3>
+            <p>Get matched with other riders heading in the same direction and split the cost of the trip.</p>
           </div>
-          <div className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-4xl">
-            <dl className="grid max-w-xl grid-cols-1 gap-x-8 gap-y-10 lg:max-w-none lg:grid-cols-3 lg:gap-y-16">
-              {features.map((feature) => (
-                <div key={feature.name} className="relative pl-16">
-                  <dt className="text-base font-semibold leading-7 text-gray-900">
-                    <div className="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-600">
-                      <feature.icon className="h-6 w-6 text-white" aria-hidden="true" />
-                    </div>
-                    {feature.name}
-                  </dt>
-                  <dd className="mt-2 text-base leading-7 text-gray-600">{feature.description}</dd>
-                </div>
-              ))}
-            </dl>
+          <div class="service">
+            <h3>Car Pooling</h3>
+            <p>Share a ride with other passengers and reduce traffic congestion and your carbon footprint.</p>
           </div>
-        </div>
-      </div>
-      <section className="relative isolate overflow-hidden bg-white px-6 py-24 sm:py-32 lg:px-8">
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(45rem_50rem_at_top,theme(colors.indigo.100),white)] opacity-20" />
-        <div className="absolute inset-y-0 right-1/2 -z-10 mr-16 w-[200%] origin-bottom-left skew-x-[-30deg] bg-white shadow-xl shadow-indigo-600/10 ring-1 ring-indigo-50 sm:mr-28 lg:mr-0 xl:mr-16 xl:origin-center" />
-        <div className="mx-auto max-w-2xl lg:max-w-4xl">
-          {/* <img className="mx-auto h-12" src="https://tailwindui.com/img/logos/workcation-logo-indigo-600.svg" alt="" /> */}
-          <figure className="mt-10">
-            <blockquote className="text-center text-xl font-semibold leading-8 text-gray-900 sm:text-2xl sm:leading-9">
-              <p>
-                “Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo expedita voluptas culpa sapiente alias
-                molestiae. Numquam corrupti in laborum sed rerum et corporis.”
-              </p>
-            </blockquote>
-            <figcaption className="mt-10">
-              <img
-                className="mx-auto h-10 w-10 rounded-full"
-                src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                alt=""
-              />
-              <div className="mt-4 flex items-center justify-center space-x-3 text-base">
-                <div className="font-semibold text-gray-900">Dhiraj Pahuja</div>
-                <svg viewBox="0 0 2 2" width={3} height={3} aria-hidden="true" className="fill-gray-900">
-                  <circle cx={1} cy={1} r={1} />
-                </svg>
-                <div className="text-gray-600">Student</div>
-              </div>
-            </figcaption>
-          </figure>
+          <div class="service">
+            <h3>On-Demand Rides</h3>
+            <p>Hail a ride instantly and get picked up by a nearby driver at any time of day or night.</p>
+          </div>
         </div>
       </section>
-      <div className="bg-white py-24 sm:py-32">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <h2 className="text-center text-lg font-semibold leading-8 text-gray-900">
-            We Are Best In The City
-          </h2>
-          <div className="mx-auto mt-10 grid max-w-lg grid-cols-4 items-center gap-x-8 gap-y-10 sm:max-w-xl sm:grid-cols-6 sm:gap-x-10 lg:mx-0 lg:max-w-none lg:grid-cols-5">
-            <img
-              className="col-span-2 max-h-28 w-full object-contain lg:col-span-1"
-              src={Mumbai}
-              alt="Transistor"
-              width={158 * 2}
-              height={48 * 2}
-            />
-            <img
-              className="col-span-2 max-h-28 w-full object-contain lg:col-span-1"
-              src={Mumbai}
-              alt="Transistor"
-              width={158 * 2}
-              height={48 * 2}
-            />
-            <img
-              className="col-span-2 max-h-28 w-full object-contain lg:col-span-1"
-              src={Mumbai}
-              alt="Transistor"
-              width={158 * 2}
-              height={48 * 2}
-            />
-            <img
-              className="col-span-2 max-h-28 w-full object-contain lg:col-span-1"
-              src={Mumbai}
-              alt="Transistor"
-              width={158 * 2}
-              height={48 * 2}
-            />
-            <img
-              className="col-span-2 max-h-28 w-full object-contain lg:col-span-1"
-              src={Mumbai}
-              alt="Transistor"
-              width={158 * 2}
-              height={48 * 2}
-            />
+
+      <section class="page-section" id="Vehical">
+        <div class="main-tariff">
+          <h1 class="section-heading text-uppercase">Vehical</h1>
+          <div class="inner-tarrif flex justify-center items-center">
+            <div class="tarrif-container">
+              <div class="inner-box flex flex-col items-center">
+                <img src={car1} alt="" />
+                <h2>Good</h2>
+                <h3>price:  /-</h3>
+                <a href="#">Book now</a>
+              </div>
+
+            </div>
+
+            <div class="tarrif-container">
+              <div class="inner-box flex flex-col items-center">
+                <img src={bike} alt="" />
+                <h2 class="heading-yellow">Better</h2>
+
+                <h3 class="yellw-section">price:  /-</h3>
+                <a href="#" class="btn-yellow">Book now</a>
+              </div>
+            </div>
+
+            <div class="tarrif-container">
+              <div class="inner-box flex flex-col items-center">
+                <img src={moped} alt="" />
+                <h2>Best</h2>
+
+                <h3>price:  /-</h3>
+                <a href="#">Book now</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="fast-booking">
+        <h1 class="fast-hading">we are best in the city </h1>
+        <h2>Find your Ride and Enjoy</h2>
+        <div class="inner-fast">
+          <div class="booking-content">
           </div>
         </div>
       </div>
+
+
+
+
+      <div class="testimonials">
+        <h1 class="heading-test">happy clients</h1>
+        <div class=" flex">
+          <div class="inner-test m-3">
+            <h1>IronMan</h1>
+            <p></p>
+            <div class="clients">
+              <img src={tony} alt="" />
+              <p>As Iron Man, I've experienced some pretty epic modes of transportation, but even I have to admit, there's something special about a good cab ride. With a skilled driver at the wheel, a cab ride can </p>
+            </div>
+          </div>
+          <div class="inner-test m-3">
+            <h1>spiderMan</h1>
+            <p></p>
+            <div class="clients">
+              <img src={spidy} alt="" />
+              <p>As Spiderman, swinging through the city is my usual mode of transportation. But sometimes, even I need to take a break from my superhero duties and get around like a regular person. That's </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
     </>
   )
 }

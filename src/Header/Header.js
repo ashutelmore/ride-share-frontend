@@ -17,10 +17,11 @@ const navigation = [
     { name: 'Home', href: '/', current: false },
     { name: 'About', href: '/about', current: false },
     { name: 'Post Ride', href: '/postride', current: false },
+    { name: 'My Rides', href: '/rides', current: false },
     { name: 'My Customer', href: '/customer', current: false },
-    { name: 'My Trips', href: '/booking', current: false },
+    { name: 'My Bookings', href: '/booking', current: false },
     { name: 'My Vehicle', href: '/vehicles', current: false },
-    { name: 'Post Vehicle', href: '/postvehicle', current: false },
+    { name: 'Add Vehicle', href: '/postvehicle', current: false },
 ]
 const userNavigation = [
     { name: 'Your Profile', href: '/profile' },

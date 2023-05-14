@@ -1,22 +1,74 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { Buffer } from 'buffer';
+import { deleteVehicles, getVehicles } from '../../App/VehicleApi';
+import { useAuth } from '../../providers/auth';
+import { useNotify } from '../../Helper/Notify';
+import { Link } from 'react-router-dom';
 
 
 const header = [
     'Vehicle Name',
     'Type',
-    'Company',
+    'Is Available For Booking',
     'Price per KM',
     'Vehicle Number',
     'Action',
 ]
-
-
-
-
 export default function Vehicles() {
+
+    const [vehicles, setVehicles] = useState([])
+    const [showNotification, contextHolder] = useNotify()
+    const [refetch, setRefetch] = useState(false)
+    const [loader, setLoader] = useState({
+        vehicle: false
+    })
+
+    const auth = useAuth()
+
+    useEffect(() => {
+        const fetchData = async (id) => {
+            setLoader({ ...loader, vehicle: true })
+            const res = await getVehicles({ driverId: id })
+            if (res.error) {
+                showNotification(res.error.errMessage)
+                setLoader({ ...loader, vehicle: false })
+
+            } else if (res.payload) {
+                setVehicles(res.payload)
+                showNotification(res.message)
+                setLoader({ ...loader, vehicle: false })
+            }
+        };
+        // if (vehicles.length <= 0)
+        console.log('refetch', refetch)
+        fetchData(auth.user._id)
+    }, [refetch])
+    const bufferToImage = (bufferData) => {
+        return `data:${bufferData.image.contentType};base64, ${Buffer.from(bufferData.image.data.data).toString('base64')}`
+    };
+    const onHandleDelete = async (item) => {
+
+        if (!window.confirm("Are sure want to delete")) {
+
+            return
+        }
+
+        const res = await deleteVehicles(item._id)
+        console.log('res', res)
+        if (res.error) {
+            showNotification(res.error.errMessage)
+        } else if (res.payload) {
+            setRefetch(!refetch)
+            showNotification(res.message)
+        }
+    };
+    console.log('vehicles', vehicles)
+
     return (
         <>
+            {contextHolder}
             <div class="container mx-auto px-4 sm:px-8">
+
                 <div class="py-8">
                     <div>
                         <header className="bg-white shadow">
@@ -26,6 +78,7 @@ export default function Vehicles() {
                             </div>
                         </header>
                     </div>
+                    {/* search */}
                     <div class="my-2 flex sm:flex-row flex-col">
                         <div class="flex flex-row mb-1 sm:mb-0">
                             <div class="relative">
@@ -87,50 +140,62 @@ export default function Vehicles() {
                                 </thead>
                                 <tbody>
                                     {
-                                        new Array(3).fill('').map((item) =>
-
+                                        vehicles.length <= 0
+                                            ?
                                             <tr>
-                                                <td class="px-5 py-5 bg-white text-sm">
-                                                    <div class="flex items-center">
-                                                        <div class="flex-shrink-0 w-10 h-10">
-                                                            <img class="w-full h-full "
-                                                                src="https://images.unsplash.com/photo-1522609925277-66fea332c575?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.2&h=160&w=160&q=80"
-                                                                alt="" />
-                                                        </div>
-                                                        <div class="ml-3">
-                                                            <p class="text-gray-900 whitespace-no-wrap">
-                                                                Alonzo Cox
-                                                            </p>
-                                                        </div>
-                                                    </div>
-
-                                                </td>
-                                                <td class="px-5 py-5 bg-white text-sm">
-                                                    <p class="text-gray-900 whitespace-no-wrap">Car</p>
-                                                </td>
-                                                <td class="px-5 py-5 bg-white text-sm">
-                                                    <p class="text-gray-900 whitespace-no-wrap">Mahindra</p>
-                                                </td>
-                                                <td class="px-5 py-5 bg-white text-sm">
-                                                    <p class="text-gray-900 whitespace-no-wrap">500</p>
-                                                </td>
-
-
-                                                <td class="px-5 py-5 bg-white text-sm">
-                                                    <p class="text-gray-900 whitespace-no-wrap">MH30 45431</p>
-                                                </td>
-                                                <td class="px-5 py-5 bg-white text-sm">
-                                                    <button
-                                                        class="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-l">
-                                                        Edit
-                                                    </button>
-                                                    <button
-                                                        class="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-r">
-                                                        Delete
-                                                    </button>
+                                                <td>
+                                                    No data found
                                                 </td>
                                             </tr>
-                                        )
+                                            :
+                                            vehicles.map((item) =>
+
+                                                <tr>
+                                                    <td class="px-5 py-5 bg-white text-sm">
+                                                        <div class="flex items-center">
+                                                            <div class="flex-shrink-0 w-10 h-10">
+                                                                <img class="w-full h-full "
+                                                                    src={bufferToImage(item)}
+                                                                    alt="" />
+                                                            </div>
+                                                            <div class="ml-3">
+                                                                <p class="text-gray-900 whitespace-no-wrap">
+                                                                    {item.vehicleName}
+                                                                </p>
+                                                            </div>
+                                                        </div>
+
+                                                    </td>
+                                                    <td class="px-5 py-5 bg-white text-sm">
+                                                        <p class="text-gray-900 whitespace-no-wrap">{item.type}</p>
+                                                    </td>
+                                                    <td class="px-5 py-5 bg-white text-sm">
+                                                        <p class="text-gray-900 whitespace-no-wrap">{item.isAvailableForBook ? "Yes" : "No"}</p>
+                                                    </td>
+                                                    <td class="px-5 py-5 bg-white text-sm">
+                                                        <p class="text-gray-900 whitespace-no-wrap">{item.pricePerKm}</p>
+                                                    </td>
+
+
+                                                    <td class="px-5 py-5 bg-white text-sm">
+                                                        <p class="text-gray-900 whitespace-no-wrap">{item.vehicleNumber}</p>
+                                                    </td>
+                                                    <td class="px-5 py-5 bg-white text-sm">
+                                                        <Link
+                                                            to={'/postvehicle/' + item._id}
+                                                            class="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-l">
+                                                            View/Edit
+                                                        </Link>
+                                                        <button
+                                                            class="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-r"
+                                                            onClick={() => onHandleDelete(item)}
+                                                        >
+
+                                                            Delete
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            )
                                     }
 
                                 </tbody>
