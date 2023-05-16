@@ -40,7 +40,7 @@ export default function Login() {
     return (
         <form onSubmit={(e) => fetchData(e)}>
             {contextHolder}
-            <div className="space-y-12 w-3/4 sm:px-4">
+            <div className="space-y-12 w-3/4 sm:px-4 mx-auto">
                 <div className="border-b border-gray-900/10 pb-12">
                     <header className="bg-white shadow">
                         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
@@ -87,33 +87,32 @@ export default function Login() {
                                 />
                             </div>
                         </div>
+                        <div className="sm:col-span-4 gap-3">
+
+                            <Link to={'/register'} className="text-2xl font-semibold leading-6 text-gray-900 mr-3">
+                                Register
+                            </Link>
+
+                            {
+                                auth.loading ?
+                                    <button
+                                        className="rounded-md bg-indigo-600 px-3 py-2 text-2xl font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                        disabled={true}
+                                    >
+                                        loading...
+                                    </button>
+                                    :
+                                    <button
+                                        className="rounded-md bg-indigo-600 px-3 py-2 text-2xl font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                        // onClick={() => fetchData()}
+                                        type='submit'
+                                    >
+                                        Login
+                                    </button>
+                            }
+                        </div>
                     </div>
                 </div>
-
-            </div>
-
-            <div className="mt-6 flex items-center justify-start gap-x-6 mb-14">
-                <Link to={'/register'} type="button" className="text-2xl font-semibold leading-6 text-gray-900">
-                    Register
-                </Link>
-
-                {
-                    auth.loading ?
-                        <button
-                            className="rounded-md bg-indigo-600 px-3 py-2 text-2xl font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                            disabled={true}
-                        >
-                            loading...
-                        </button>
-                        :
-                        <button
-                            className="rounded-md bg-indigo-600 px-3 py-2 text-2xl font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                            // onClick={() => fetchData()}
-                            type='submit'
-                        >
-                            Login
-                        </button>
-                }
             </div>
         </form>
     )

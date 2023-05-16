@@ -1,21 +1,25 @@
 
 import { PhotoIcon, UserCircleIcon } from '@heroicons/react/24/solid'
 import { useAuth } from '../../providers/auth'
-import { updateUser } from '../../App/Api'
+import { getUser, updateUser } from '../../App/Api'
 import { useNotify } from '../../Helper/Notify'
 import { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
 
-export default function Example() {
+export default function Profile() {
     const auth = useAuth()
     const [showNotification, contextHolder] = useNotify()
     const [userData, setUserData] = useState({})
     const [loader, setLoader] = useState({
         user: false,
     })
+
+    const params = useParams()
     console.log('auth', auth)
     const onDetailsSave = async (e) => {
         e.preventDefault()
-        auth.setUser(userData)
+        if (!params.id)
+            auth.setUser(userData)
         setLoader({ ...loader, user: true })
         const res = await updateUser(userData);
         console.log('res', res)
@@ -30,10 +34,30 @@ export default function Example() {
     };
 
     useEffect(() => {
-        // if (!userData._id && auth._id) {
-        setUserData(auth.user)
-        // }
-    }, [auth.user])
+        if (params.id) {
+            const fetchData = async (id) => {
+                // setLoader({ ...loader, vehicle: true })
+                const res = await getUser(id)
+                if (res.error) {
+                    showNotification(res.error.errMessage)
+                    // setLoader({ ...loader, vehicle: false })
+
+                } else if (res.payload) {
+                    setUserData(res.payload)
+                    // showNotification(res.message)
+                    // setLoader({ ...loader, vehicle: false })
+                }
+            };
+            // if (vehicles.length <= 0)
+            fetchData(params.id)
+
+        }
+        else {
+
+            setUserData(auth.user)
+        }
+
+    }, [auth.user, params])
 
     console.log('userData', userData)
     if (!userData._id)
@@ -42,7 +66,7 @@ export default function Example() {
     return (
         <form onSubmit={(e) => onDetailsSave(e)}>
             {contextHolder}
-            <div className="space-y-12 w-3/4 sm:px-4">
+            <div className="space-y-12 w-3/4 sm:px-4 mx-auto">
                 <div className="border-b border-gray-900/10 pb-12">
                     <header className="bg-white shadow">
                         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
@@ -239,42 +263,25 @@ export default function Example() {
                                         Female
                                     </label>
                                 </div>
+                                <div className="flex items-center gap-x-3">
+                                    <div className="mt-6 flex items-center justify-start gap-x-6 mb-14">
+                                        {/* <button type="button" className="text-2xl font-semibold leading-6 text-gray-900">
+                    Cancel
+                </button> */}
+                                        <button
+                                            type="submit"
+                                            className="rounded-md bg-indigo-600 px-3 py-2 text-2xl font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                        >
+                                            Save
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
                     </div>
                 </div>
-                {/* <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
 
-                    <div className="col-span-full">
-                        <label htmlFor="about" className="block text-sm font-medium leading-6 text-gray-900">
-                            About
-                        </label>
-                        <div className="mt-2">
-                            <textarea
-                                id="about"
-                                name="about"
-                                rows={3}
-                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                defaultValue={''}
-                            />
-                        </div>
-                        <p className="mt-3 text-sm leading-6 text-gray-600">Write a few sentences about yourself.</p>
-                    </div>
-                </div> */}
-
-            </div>
-
-            <div className="mt-6 flex items-center justify-start gap-x-6 mb-14">
-                {/* <button type="button" className="text-2xl font-semibold leading-6 text-gray-900">
-                    Cancel
-                </button> */}
-                <button
-                    type="submit"
-                    className="rounded-md bg-indigo-600 px-3 py-2 text-2xl font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                >
-                    Save
-                </button>
             </div>
         </form>
     )

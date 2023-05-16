@@ -3,16 +3,18 @@ import { Buffer } from 'buffer';
 import { getRides, searchRides } from '../../App/RideApi';
 import { formatDateToShow } from '../../Helper/helper';
 import { getVehicles } from '../../App/VehicleApi';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 
 export default function SearchRide() {
     const [open, setOpen] = useState(false)
+    const params = useParams()
     const [rides, setRides] = useState([])
     const [loader, setLoader] = useState({
         vehicle: false,
         ride: false,
     })
+    console.log('params', params)
     let menuRef = useRef();
     useEffect(() => {
         let handler = (e) => {
@@ -40,10 +42,12 @@ export default function SearchRide() {
     }
 
     const [search, setSearch] = useState({
-        pickup: '',
-        desti: '',
-        startDate: '',
-        endDate: '',
+        pickup: params.pickup || '',
+        desti: params.desti || '',
+        startDate: params.start || '',
+        endDate: params.end || '',
+
+        type: 'ride'
     })
 
     const searchInput = (e) => {
@@ -65,6 +69,8 @@ export default function SearchRide() {
             desti: search.desti,
             start: formatDate(search.startDate) || '',
             end: formatDate(search.endDate) || '',
+
+            type: search.type || ''
         })
         if (res.error) {
             setLoader({ ...loader, vehicle: false })
@@ -92,38 +98,41 @@ export default function SearchRide() {
                 <div className="border border-gray-300 p-6 grid grid-cols-1 gap-6 bg-white shadow-lg rounded-lg" >
                     <div className="flex flex-col md:flex-row">
                         <div className="">
-                            <select className="border p-2 rounded w-[150px]">
-                                <option>Round-trip</option>
-                                <option>Missouri</option>
-                                <option>texas</option>
+                            <select
+                                className="border p-2 rounded w-[150px]"
+                                value={search.type}
+                                onChange={(e) => setSearch({ ...search, type: e.target.value })}
+                            >
+                                <option value={'ride'}>Ride</option>
+                                <option value={'vehicle'}>Private Vehicle</option>
                             </select>
                         </div>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4" ref={menuRef}>
                         <div className="grid grid-cols-2 gap-2 border border-gray-200 p-2 rounded">
                             <div className="  rounded p-1 w-full ">
-                                <div class="">
-                                    <div class="inline-flex flex-col justify-center relative text-gray-500">
-                                        <div class="relative">
+                                <div className="">
+                                    <div className="inline-flex flex-col justify-center relative text-gray-500">
+                                        <div className="relative">
                                             <input
                                                 type="text"
-                                                class="p-2 pl-8 rounded border border-gray-200 bg-gray-200 focus:bg-white focus:outline-none focus:ring-2 "
+                                                className="p-2 pl-8 rounded border border-gray-200 bg-gray-200 focus:bg-white focus:outline-none focus:ring-2 "
                                                 placeholder="Pickup location"
                                                 name='pickup'
                                                 value={search.pickup}
                                                 onChange={e => searchInput(e)}
                                             />
-                                            <svg class="w-4 h-4 absolute left-2.5 top-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <svg className="w-4 h-4 absolute left-2.5 top-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                             </svg>
                                         </div>
                                         {
                                             open &&
-                                            <ul class="bg-white border border-gray-100 w-full mt-2 absolute top-10">
+                                            <ul className="bg-white border border-gray-100 w-full mt-2 absolute top-10">
                                                 {
                                                     new Array(4).fill("").map((item, i) =>
-                                                        <li class="pl-8 pr-2 py-1 border-b-2 border-gray-100 relative cursor-pointer hover:bg-yellow-50 hover:text-gray-900">
-                                                            <svg class="absolute w-4 h-4 left-2 top-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                        <li className="pl-8 pr-2 py-1 border-b-2 border-gray-100 relative cursor-pointer hover:bg-yellow-50 hover:text-gray-900">
+                                                            <svg className="absolute w-4 h-4 left-2 top-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                                                 <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
                                                             </svg>
                                                             <b>Gar</b>dameer - Italië
@@ -135,28 +144,28 @@ export default function SearchRide() {
                                 </div>
                             </div>
                             <div className="rounded p-1 w-full ">
-                                <div class="">
-                                    <div class="inline-flex flex-col justify-center relative text-gray-500">
-                                        <div class="relative">
+                                <div className="">
+                                    <div className="inline-flex flex-col justify-center relative text-gray-500">
+                                        <div className="relative">
                                             <input type="text"
-                                                class="p-2 pl-8 rounded border border-gray-200 bg-gray-200 focus:bg-white focus:outline-none focus:ring-2 "
+                                                className="p-2 pl-8 rounded border border-gray-200 bg-gray-200 focus:bg-white focus:outline-none focus:ring-2 "
                                                 placeholder="Destination location"
                                                 name='desti'
                                                 value={search.desti}
                                                 onChange={e => searchInput(e)}
 
                                             />
-                                            <svg class="w-4 h-4 absolute left-2.5 top-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <svg className="w-4 h-4 absolute left-2.5 top-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                             </svg>
                                         </div>
                                         {
                                             open &&
-                                            <ul class="bg-white border border-gray-100 w-full mt-2 absolute top-10">
+                                            <ul className="bg-white border border-gray-100 w-full mt-2 absolute top-10">
                                                 {
                                                     new Array(4).fill("").map((item, i) =>
-                                                        <li class="pl-8 pr-2 py-1 border-b-2 border-gray-100 relative cursor-pointer hover:bg-yellow-50 hover:text-gray-900">
-                                                            <svg class="absolute w-4 h-4 left-2 top-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                        <li className="pl-8 pr-2 py-1 border-b-2 border-gray-100 relative cursor-pointer hover:bg-yellow-50 hover:text-gray-900">
+                                                            <svg className="absolute w-4 h-4 left-2 top-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                                                 <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
                                                             </svg>
                                                             <b>Gar</b>dameer - Italië
@@ -167,79 +176,86 @@ export default function SearchRide() {
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div className="grid grid-cols-2 gap-2 border border-gray-200 p-2 rounded">
-                            <div className="rounded p-1 w-full ">
-                                <div class="">
-                                    <div class="inline-flex flex-col justify-center relative text-gray-500">
-                                        <div class="relative">
-                                            <input type="date"
-                                                class="p-2 pl-8 rounded border border-gray-200 bg-gray-200 focus:bg-white focus:outline-none focus:ring-2 "
-                                                placeholder="Start Date"
-                                                name='startDate'
-                                                value={search.startDate}
-                                                onChange={e => searchInput(e)}
 
-                                            />
-                                            <svg class="w-4 h-4 absolute left-2.5 top-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                            </svg>
-                                        </div>
-                                        {
-                                            open &&
-                                            <ul class="bg-white border border-gray-100 w-full mt-2 absolute top-10">
-                                                {
-                                                    new Array(4).fill("").map((item, i) =>
-                                                        <li class="pl-8 pr-2 py-1 border-b-2 border-gray-100 relative cursor-pointer hover:bg-yellow-50 hover:text-gray-900">
-                                                            <svg class="absolute w-4 h-4 left-2 top-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                                                <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                                            </svg>
-                                                            <b>Gar</b>dameer - Italië
-                                                        </li>
-                                                    )}
-                                            </ul>
-                                        }
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="rounded p-1 w-full ">
-                                <div class="">
-                                    <div class="inline-flex flex-col justify-center relative text-gray-500">
-                                        <div class="relative">
-                                            <input type="date"
-                                                class="p-2 pl-8 rounded border border-gray-200 bg-gray-200 focus:bg-white focus:outline-none focus:ring-2 "
-                                                placeholder="End location"
-                                                name='endDate'
-                                                value={search.endDate}
-                                                onChange={e => searchInput(e)}
-                                            />
-                                            <svg class="w-4 h-4 absolute left-2.5 top-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                            </svg>
-                                        </div>
-                                        {
-                                            open &&
-                                            <ul class="bg-white border border-gray-100 w-full mt-2 absolute top-10">
-                                                {
-                                                    new Array(4).fill("").map((item, i) =>
-                                                        <li class="pl-8 pr-2 py-1 border-b-2 border-gray-100 relative cursor-pointer hover:bg-yellow-50 hover:text-gray-900">
-                                                            <svg class="absolute w-4 h-4 left-2 top-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                                                <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                                            </svg>
-                                                            <b>Gar</b>dameer - Italië
-                                                        </li>
-                                                    )}
-                                            </ul>
-                                        }
-                                    </div>
-                                </div>
-                            </div>
                         </div>
+                        {
+                            search.type == 'ride'
+                            &&
+                            <div className="grid grid-cols-2 gap-2 border border-gray-200 p-2 rounded">
+                                <div className="rounded p-1 w-full ">
+                                    <div className="">
+                                        <div className="inline-flex flex-col justify-center relative text-gray-500">
+                                            <div className="relative">
+                                                <input type="date"
+                                                    className="p-2 pl-8 rounded border border-gray-200 bg-gray-200 focus:bg-white focus:outline-none focus:ring-2 "
+                                                    placeholder="Start Date"
+                                                    name='startDate'
+                                                    value={search.startDate}
+                                                    onChange={e => searchInput(e)}
+
+                                                />
+                                                <svg className="w-4 h-4 absolute left-2.5 top-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                                </svg>
+                                            </div>
+                                            {
+                                                open &&
+                                                <ul className="bg-white border border-gray-100 w-full mt-2 absolute top-10">
+                                                    {
+                                                        new Array(4).fill("").map((item, i) =>
+                                                            <li className="pl-8 pr-2 py-1 border-b-2 border-gray-100 relative cursor-pointer hover:bg-yellow-50 hover:text-gray-900">
+                                                                <svg className="absolute w-4 h-4 left-2 top-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                                    <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                                                </svg>
+                                                                <b>Gar</b>dameer - Italië
+                                                            </li>
+                                                        )}
+                                                </ul>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="rounded p-1 w-full ">
+                                    <div className="">
+                                        <div className="inline-flex flex-col justify-center relative text-gray-500">
+                                            <div className="relative">
+                                                <input type="date"
+                                                    className="p-2 pl-8 rounded border border-gray-200 bg-gray-200 focus:bg-white focus:outline-none focus:ring-2 "
+                                                    placeholder="End location"
+                                                    name='endDate'
+                                                    value={search.endDate}
+                                                    onChange={e => searchInput(e)}
+                                                />
+                                                <svg className="w-4 h-4 absolute left-2.5 top-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                                </svg>
+                                            </div>
+                                            {
+                                                open &&
+                                                <ul className="bg-white border border-gray-100 w-full mt-2 absolute top-10">
+                                                    {
+                                                        new Array(4).fill("").map((item, i) =>
+                                                            <li className="pl-8 pr-2 py-1 border-b-2 border-gray-100 relative cursor-pointer hover:bg-yellow-50 hover:text-gray-900">
+                                                                <svg className="absolute w-4 h-4 left-2 top-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                                    <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                                                </svg>
+                                                                <b>Gar</b>dameer - Italië
+                                                            </li>
+                                                        )}
+                                                </ul>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
                     </div>
-                    <div className="flex justify-center"><button
-                        className="p-2 border w-1/4 rounded-md bg-gray-800 text-white"
-                        onClick={onClickSearch}
-                    >Search</button></div>
+                    <div className="flex justify-center">
+                        <button
+                            className="p-2 border w-1/4 rounded-md bg-gray-800 text-white"
+                            onClick={onClickSearch}
+                        >Search</button>
+                    </div>
                 </div>
                 <div className="border my-6 border-gray-300 p-6 grid grid-cols-1 gap-6 bg-white shadow-lg rounded-lg">
                     <div className="flex flex-col ">

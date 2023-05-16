@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { Buffer } from 'buffer';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { getRides } from '../App/RideApi';
 import { useNotify } from '../Helper/Notify';
 import { formatDateToShow, formatDateYMD, isEmptyField, isEmptyObject } from '../Helper/helper';
 import { useAuth } from '../providers/auth';
 import { createBookRide, createBookings, getBookings, updateBookings } from '../App/BookRideApi';
+import NotFound from '../Pages/NotFound';
 
 export default function BookRide({ }) {
     const params = useParams()
@@ -23,7 +24,8 @@ export default function BookRide({ }) {
         pickupDate: '',
         pickupTime: '',
         numSits: '',
-        notes: 'something'
+        notes: 'something',
+        isPrivateBooking: null
     })
 
     const [showNotification, contextHolder] = useNotify()
@@ -42,7 +44,8 @@ export default function BookRide({ }) {
                 setLoader({ ...loader, book: false })
 
             } else if (res.payload) {
-                setRide(res.payload[0])
+                if (res.payload.length > 0)
+                    setRide(res.payload[0])
                 // showNotification(res.message)
                 setLoader({ ...loader, book: false })
             }
@@ -74,11 +77,6 @@ export default function BookRide({ }) {
     // console.log('ride', ride)
     // console.log('params', params)
 
-    const renderNumbersOfSits = (sites) => {
-        for (let index = 1; index <= sites; index++) {
-
-        }
-    };
 
     const onHandleBookRequest = async (e) => {
         e.preventDefault()
@@ -139,49 +137,53 @@ export default function BookRide({ }) {
     return (
         <>
             {
-                ride._id
-                &&
-                <section>
-                    {contextHolder}
-                    <div class="relative mx-auto max-w-screen-xl px-4 py-8">
-                        <div class="grid grid-cols-1 items-start gap-8 md:grid-cols-2">
-                            <div class="grid grid-cols-2 gap-4 md:grid-cols-1">
-                                <img
-                                    alt="Les Paul"
-                                    src={ride.vehicleId && bufferToImage(ride.vehicleId)}
-                                    class="aspect-square w-full rounded-xl object-cover"
-                                />
-                            </div>
+                !ride._id ?
+                    <NotFound
+                        heading="No longer exists"
+                        descp="This ride seems like deleted by driver"
+                    />
+                    :
+                    <section>
+                        {contextHolder}
+                        <div className="relative mx-auto max-w-screen-xl px-4 py-8">
+                            <div className="grid grid-cols-1 items-start gap-8 md:grid-cols-2">
+                                <div className="grid grid-cols-2 gap-4 md:grid-cols-1">
+                                    <img
+                                        alt="Les Paul"
+                                        src={ride.vehicleId && bufferToImage(ride.vehicleId)}
+                                        className="aspect-square w-full rounded-xl object-cover"
+                                    />
+                                </div>
 
-                            <div class="sticky top-0">
-                                {
-                                    ride.vehicleId.isAvailableForBook ?
-                                        <strong
-                                            class="rounded-full border border-green-600 bg-gray-100 px-3 py-0.5 text-xs font-medium tracking-wide text-green-600"
-                                        >
-                                            Private Book available
-                                        </strong>
-                                        :
-                                        <strong
-                                            class="rounded-full border border-red-600 bg-gray-100 px-3 py-0.5 text-xs font-medium tracking-wide text-red-600"
-                                        >
-                                            Not for Private vehicle
-                                        </strong>
+                                <div className="sticky top-0">
+                                    {
+                                        ride.vehicleId.isAvailableForBook ?
+                                            <strong
+                                                className="rounded-full border border-green-600 bg-gray-100 px-3 py-0.5 text-xs font-medium tracking-wide text-green-600"
+                                            >
+                                                Private Book available
+                                            </strong>
+                                            :
+                                            <strong
+                                                className="rounded-full border border-red-600 bg-gray-100 px-3 py-0.5 text-xs font-medium tracking-wide text-red-600"
+                                            >
+                                                Not for Private vehicle
+                                            </strong>
 
-                                }
+                                    }
 
-                                <div class="mt-8 flex justify-between">
-                                    <div class="max-w-[35ch] space-y-2">
-                                        <h1 class="text-xl font-bold sm:text-2xl">
-                                            {ride.pickupLocation} to {ride.destination}
-                                        </h1>
+                                    <div className="mt-8 flex justify-between">
+                                        <div className="max-w-[35ch] space-y-2">
+                                            <h1 className="text-xl font-bold sm:text-2xl">
+                                                {ride.pickupLocation} to {ride.destination}
+                                            </h1>
 
-                                        <h3 class="text-lg">Driver Name {ride.driverId.name}</h3>
-                                        <h3 class="text-lg">{ride.driverId.phoneNumber}</h3>
+                                            <h3 className="text-lg">Driver Name {ride.driverId.name}</h3>
+                                            <h3 className="text-lg">{ride.driverId.phoneNumber}</h3>
 
-                                        {/* <div class="-ms-0.5 flex">
+                                            {/* <div className="-ms-0.5 flex">
                                             <svg
-                                                class="h-5 w-5 text-yellow-400"
+                                                className="h-5 w-5 text-yellow-400"
                                                 xmlns="http://www.w3.org/2000/svg"
                                                 viewBox="0 0 20 20"
                                                 fill="currentColor"
@@ -192,7 +194,7 @@ export default function BookRide({ }) {
                                             </svg>
 
                                             <svg
-                                                class="h-5 w-5 text-yellow-400"
+                                                className="h-5 w-5 text-yellow-400"
                                                 xmlns="http://www.w3.org/2000/svg"
                                                 viewBox="0 0 20 20"
                                                 fill="currentColor"
@@ -203,7 +205,7 @@ export default function BookRide({ }) {
                                             </svg>
 
                                             <svg
-                                                class="h-5 w-5 text-yellow-400"
+                                                className="h-5 w-5 text-yellow-400"
                                                 xmlns="http://www.w3.org/2000/svg"
                                                 viewBox="0 0 20 20"
                                                 fill="currentColor"
@@ -214,7 +216,7 @@ export default function BookRide({ }) {
                                             </svg>
 
                                             <svg
-                                                class="h-5 w-5 text-yellow-400"
+                                                className="h-5 w-5 text-yellow-400"
                                                 xmlns="http://www.w3.org/2000/svg"
                                                 viewBox="0 0 20 20"
                                                 fill="currentColor"
@@ -225,7 +227,7 @@ export default function BookRide({ }) {
                                             </svg>
 
                                             <svg
-                                                class="h-5 w-5 text-gray-200"
+                                                className="h-5 w-5 text-gray-200"
                                                 xmlns="http://www.w3.org/2000/svg"
                                                 viewBox="0 0 20 20"
                                                 fill="currentColor"
@@ -235,211 +237,240 @@ export default function BookRide({ }) {
                                                 />
                                             </svg>
                                         </div> */}
-                                    </div>
-
-                                    <p class="text-lg font-bold">₹ {ride.pricePerKM}/KM </p>
-                                </div>
-
-                                <div class="mt-4">
-                                    <div class=" text-left">
-                                        <h6>
-                                            {ride.vehicleId.descp}
-                                        </h6>
-                                        <h6>
-                                            Journey start from {formatDateToShow(ride.startDate)} and end on {formatDateToShow(ride.endDate)}
-                                        </h6>
-                                    </div>
-
-                                    {/* <button class="mt-2 text-sm font-medium underline">Read More</button> */}
-                                </div>
-
-                                <form class="mt-8" onSubmit={onHandleBookRequest}>
-                                    <fieldset>
-                                        <legend class="mb-1 text-sm font-medium"> Permissions in Vehicle </legend>
-
-                                        <div class="flex flex-wrap gap-1">
-                                            <label for="color_tt" class="cursor-pointer">
-                                                {ride.isAllow.chat ?
-
-                                                    <span
-                                                        class="group inline-block rounded-full border px-3 py-1 text-xs font-medium bg-green-400 text-white"
-                                                    >
-                                                        Chat allowed
-                                                    </span>
-                                                    :
-                                                    <span
-                                                        class="group inline-block rounded-full border px-3 py-1 text-xs font-medium bg-green-400 text-white"
-                                                    >
-                                                        Chat not allowed
-                                                    </span>
-                                                }
-                                            </label>
-                                            <label for="color_tt" class="cursor-pointer">
-                                                {ride.isAllow.food ?
-
-                                                    <span
-                                                        class="group inline-block rounded-full border px-3 py-1 text-xs font-medium bg-green-400 text-white"
-                                                    >
-                                                        food allowed
-                                                    </span>
-                                                    :
-                                                    <span
-                                                        class="group inline-block rounded-full border px-3 py-1 text-xs font-medium bg-red-400 text-white"
-                                                    >
-                                                        food not allowed
-                                                    </span>
-                                                }
-                                            </label>
-                                            <label for="color_tt" class="cursor-pointer">
-                                                {ride.isAllow.music ?
-
-                                                    <span
-                                                        class="group inline-block rounded-full border px-3 py-1 text-xs font-medium bg-green-400 text-white"
-                                                    >
-                                                        music allowed
-                                                    </span>
-                                                    :
-                                                    <span
-                                                        class="group inline-block rounded-full border px-3 py-1 text-xs font-medium bg-red-400 text-white"
-                                                    >
-                                                        music not allowed
-                                                    </span>
-                                                }
-                                            </label>
-                                            <label for="color_tt" class="cursor-pointer">
-                                                {ride.isAllow.chat ?
-
-                                                    <span
-                                                        class="group inline-block rounded-full border px-3 py-1 text-xs font-medium bg-green-400 text-white"
-                                                    >
-                                                        Chat allowed
-                                                    </span>
-                                                    :
-                                                    <span
-                                                        class="group inline-block rounded-full border px-3 py-1 text-xs font-medium bg-red-400 text-white"
-                                                    >
-                                                        Chat not allowed
-                                                    </span>
-                                                }
-                                            </label>
                                         </div>
-                                    </fieldset>
 
-                                    <fieldset class="mt-4">
+                                        <p className="text-lg font-bold">₹ {ride.pricePerKM}/KM </p>
+                                    </div>
 
-                                        <div class="flex flex-wrap ">
+                                    <div className="mt-4">
+                                        <div className=" text-left">
+                                            <h6>
+                                                {ride.vehicleId.descp}
+                                            </h6>
+                                            <h6>
+                                                Journey start from {formatDateToShow(ride.startDate)} and end on {formatDateToShow(ride.endDate)}
+                                            </h6>
+                                        </div>
 
-                                            <div className=" grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                                                <div className="sm:col-span-3">
-                                                    <label htmlFor="start-location" className="block text-sm font-medium leading-6 text-gray-900">
-                                                        Start Location
-                                                    </label>
-                                                    <div className="mt-2">
-                                                        <input
-                                                            type="text"
-                                                            name="start-location"
-                                                            id="start-location"
-                                                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                                            value={bookRide.pickupLocation}
-                                                            onChange={(e) => setBookRide({ ...bookRide, pickupLocation: e.target.value })}
-                                                        />
-                                                    </div>
-                                                </div>
+                                        {/* <button className="mt-2 text-sm font-medium underline">Read More</button> */}
+                                    </div>
 
-                                                <div className="sm:col-span-3">
-                                                    <label htmlFor="end-loaction" className="block text-sm font-medium leading-6 text-gray-900">
-                                                        End Location
-                                                    </label>
-                                                    <div className="mt-2">
-                                                        <input
-                                                            type="text"
-                                                            name="end-loaction"
-                                                            id="end-loaction"
-                                                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                                            value={bookRide.destination}
-                                                            onChange={(e) => setBookRide({ ...bookRide, destination: e.target.value })}
-                                                        />
-                                                    </div>
-                                                </div>
-                                                <div className="sm:col-span-2">
-                                                    <label htmlFor="country" className="block text-sm font-medium leading-6 text-gray-900">
-                                                        Number of Sits
-                                                    </label>
-                                                    <div className="mt-2">
-                                                        <select
-                                                            id="isAvailableForBook"
-                                                            name="isAvailableForBook"
-                                                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
-                                                            value={bookRide.numSits}
-                                                            onChange={(e) => setBookRide({ ...bookRide, numSits: e.target.value })}
+                                    <form className="mt-8" onSubmit={onHandleBookRequest}>
+                                        <fieldset>
+                                            <legend className="mb-1 text-sm font-medium"> Permissions in Vehicle </legend>
+
+                                            <div className="flex flex-wrap gap-1">
+                                                <label htmlFor="color_tt" className="cursor-pointer">
+                                                    {ride.isAllow.chat ?
+
+                                                        <span
+                                                            className="group inline-block rounded-full border px-3 py-1 text-xs font-medium bg-green-400 text-white"
                                                         >
-                                                            <option value={''}>Select Option</option>
-                                                            {
-                                                                new Array(ride.vehicleId.sits).fill('').map((item, i) =>
-                                                                    <option value={i + 1}>{i + 1}</option>
-                                                                )
-                                                            }
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div className="sm:col-span-2">
-                                                    <label htmlFor="pickupDate" className="block text-sm font-medium leading-6 text-gray-900">
-                                                        On date Journey Start
-                                                    </label>
-                                                    <div className="mt-2">
-                                                        <input
-                                                            type="date"
-                                                            id="pickupDate"
-                                                            class=" rounded border-gray-200 py-3 text-center text-xs [-moz-appearance:_textfield] [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none"
-                                                            value={formatDateYMD(bookRide.pickupDate)}
-                                                            onChange={(e) => setBookRide({ ...bookRide, pickupDate: e.target.value })}
-                                                        />
-                                                    </div>
-                                                </div>
-                                                <div className="sm:col-span-2">
-                                                    <label htmlFor="pickupTime" className="block text-sm font-medium leading-6 text-gray-900">
-                                                        On time Journey Start
-                                                    </label>
-                                                    <div className="mt-2">
-                                                        <input
-                                                            type="time"
-                                                            id="pickupTime"
-                                                            class=" rounded border-gray-200 py-3 text-center text-xs [-moz-appearance:_textfield] [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none"
-                                                            value={bookRide.pickupTime}
-                                                            onChange={(e) => setBookRide({ ...bookRide, pickupTime: e.target.value })}
-                                                        />
-                                                    </div>
-                                                </div>
+                                                            Chat allowed
+                                                        </span>
+                                                        :
+                                                        <span
+                                                            className="group inline-block rounded-full border px-3 py-1 text-xs font-medium bg-green-400 text-white"
+                                                        >
+                                                            Chat not allowed
+                                                        </span>
+                                                    }
+                                                </label>
+                                                <label htmlFor="color_tt" className="cursor-pointer">
+                                                    {ride.isAllow.food ?
+
+                                                        <span
+                                                            className="group inline-block rounded-full border px-3 py-1 text-xs font-medium bg-green-400 text-white"
+                                                        >
+                                                            food allowed
+                                                        </span>
+                                                        :
+                                                        <span
+                                                            className="group inline-block rounded-full border px-3 py-1 text-xs font-medium bg-red-400 text-white"
+                                                        >
+                                                            food not allowed
+                                                        </span>
+                                                    }
+                                                </label>
+                                                <label htmlFor="color_tt" className="cursor-pointer">
+                                                    {ride.isAllow.music ?
+
+                                                        <span
+                                                            className="group inline-block rounded-full border px-3 py-1 text-xs font-medium bg-green-400 text-white"
+                                                        >
+                                                            music allowed
+                                                        </span>
+                                                        :
+                                                        <span
+                                                            className="group inline-block rounded-full border px-3 py-1 text-xs font-medium bg-red-400 text-white"
+                                                        >
+                                                            music not allowed
+                                                        </span>
+                                                    }
+                                                </label>
+                                                <label htmlFor="color_tt" className="cursor-pointer">
+                                                    {ride.isAllow.chat ?
+
+                                                        <span
+                                                            className="group inline-block rounded-full border px-3 py-1 text-xs font-medium bg-green-400 text-white"
+                                                        >
+                                                            Chat allowed
+                                                        </span>
+                                                        :
+                                                        <span
+                                                            className="group inline-block rounded-full border px-3 py-1 text-xs font-medium bg-red-400 text-white"
+                                                        >
+                                                            Chat not allowed
+                                                        </span>
+                                                    }
+                                                </label>
                                             </div>
+                                        </fieldset>
+
+                                        <fieldset className="mt-4">
+
+                                            <div className="flex flex-wrap ">
+
+                                                <div className=" grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                                                    <div className="sm:col-span-3">
+                                                        <label htmlFor="start-location" className="block text-sm font-medium leading-6 text-gray-900">
+                                                            Start Location
+                                                        </label>
+                                                        <div className="mt-2">
+                                                            <input
+                                                                type="text"
+                                                                name="start-location"
+                                                                id="start-location"
+                                                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                                                value={bookRide.pickupLocation}
+                                                                onChange={(e) => setBookRide({ ...bookRide, pickupLocation: e.target.value })}
+                                                            />
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="sm:col-span-3">
+                                                        <label htmlFor="end-loaction" className="block text-sm font-medium leading-6 text-gray-900">
+                                                            End Location
+                                                        </label>
+                                                        <div className="mt-2">
+                                                            <input
+                                                                type="text"
+                                                                name="end-loaction"
+                                                                id="end-loaction"
+                                                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                                                value={bookRide.destination}
+                                                                onChange={(e) => setBookRide({ ...bookRide, destination: e.target.value })}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <div className="sm:col-span-2">
+                                                        <label htmlFor="country" className="block text-sm font-medium leading-6 text-gray-900">
+                                                            Number of Sits
+                                                        </label>
+                                                        <div className="mt-2">
+                                                            <select
+                                                                id="isAvailableForBook"
+                                                                name="isAvailableForBook"
+                                                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+                                                                value={bookRide.numSits}
+                                                                onChange={(e) => setBookRide({ ...bookRide, numSits: e.target.value })}
+                                                            >
+                                                                <option value={''}>Select Option</option>
+                                                                {
+                                                                    new Array(ride.vehicleId.sits).fill('').map((item, i) =>
+                                                                        <option value={i + 1}>{i + 1}</option>
+                                                                    )
+                                                                }
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div className="sm:col-span-2">
+                                                        <label htmlFor="pickupDate" className="block text-sm font-medium leading-6 text-gray-900">
+                                                            On date Journey Start
+                                                        </label>
+                                                        <div className="mt-2">
+                                                            <input
+                                                                type="date"
+                                                                id="pickupDate"
+                                                                className=" rounded border-gray-200 py-3 text-center text-xs [-moz-appearance:_textfield] [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none"
+                                                                value={formatDateYMD(bookRide.pickupDate)}
+                                                                onChange={(e) => setBookRide({ ...bookRide, pickupDate: e.target.value })}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <div className="sm:col-span-2">
+                                                        <label htmlFor="pickupTime" className="block text-sm font-medium leading-6 text-gray-900">
+                                                            On time Journey Start
+                                                        </label>
+                                                        <div className="mt-2">
+                                                            <input
+                                                                type="time"
+                                                                id="pickupTime"
+                                                                className=" rounded border-gray-200 py-3 text-center text-xs [-moz-appearance:_textfield] [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none"
+                                                                value={bookRide.pickupTime}
+                                                                onChange={(e) => setBookRide({ ...bookRide, pickupTime: e.target.value })}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <div className="sm:col-span-full">
+                                                        <div className="relative flex gap-x-3">
+                                                            <div className="flex h-6 items-center">
+                                                                <input
+                                                                    id="isInsurance"
+                                                                    name="isInsurance"
+                                                                    type="checkbox"
+                                                                    className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                                                                    checked={bookRide.isPrivateBooking}
+                                                                    onChange={(e) => setBookRide({ ...bookRide, isPrivateBooking: e.target.checked })}
+                                                                />
+                                                            </div>
+                                                            <div className="text-sm leading-6">
+                                                                <label htmlFor="isInsurance" className="font-medium text-gray-900">
+                                                                    book as Private vehicle
+                                                                </label>
+                                                                <p className="text-gray-500">Checked if you want to book as Private vehicle  .</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
 
 
+                                            </div>
+                                        </fieldset>
+
+                                        <div className="mt-8 w-full gap-4">
+
+                                            {
+                                                !auth.user._id ?
+                                                    <Link
+                                                        to={'/login'}
+                                                        className="block rounded bg-blue-600 px-5 py-3 my-3 text-xs font-medium text-white hover:bg-blue-500"
+                                                    >
+                                                        Login
+                                                    </Link>
+                                                    :
+                                                    bookRide._id ?
+                                                        <button
+                                                            className="block rounded bg-blue-600 px-5 py-3 my-3 text-xs font-medium text-white hover:bg-blue-500"
+                                                            type='submit'
+                                                        >
+                                                            Update Request
+                                                        </button>
+                                                        :
+                                                        <button
+                                                            className="block rounded bg-green-600 px-5 py-3 my-3 text-xs font-medium text-white hover:bg-green-500"
+                                                            type='submit'
+                                                        >
+                                                            Send Request
+                                                        </button>
+                                            }
                                         </div>
-                                    </fieldset>
-
-                                    <div class="mt-8 w-full gap-4">
-
-                                        {
-                                            bookRide._id ?
-                                                <button
-                                                    class="block rounded bg-blue-600 px-5 py-3 my-3 text-xs font-medium text-white hover:bg-blue-500"
-                                                    type='submit'
-                                                >
-                                                    Update Request
-                                                </button>
-                                                :
-                                                <button
-                                                    class="block rounded bg-green-600 px-5 py-3 my-3 text-xs font-medium text-white hover:bg-green-500"
-                                                    type='submit'
-                                                >
-                                                    Send Request
-                                                </button>
-                                        }
-                                    </div>
-                                </form>
+                                    </form>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </section >
+                    </section >
             }
         </>
     )

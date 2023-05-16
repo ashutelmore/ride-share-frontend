@@ -18,7 +18,7 @@ export default function AddVehicle() {
 
 
     const [vehicle, setVehicle] = useState({
-        isAvailableForBook: null,
+        isAvailableForBook: '',
         vehicleName: '',
         type: '',
         sits: '',
@@ -67,6 +67,7 @@ export default function AddVehicle() {
         formData.append('vehicleImg', vehicleImg)
 
         const res = await createVehicles(formData)
+        console.log('res', res)
         if (res.error) {
             showNotification(res.error.errMessage)
             setLoader({ ...loader, vehicle: false })
@@ -127,7 +128,7 @@ export default function AddVehicle() {
 
     // console.log('vehicle', vehicle)
     return (
-        <form onSubmit={onHandleSaveVehicle} enctype="multipart/form-data">
+        <form onSubmit={onHandleSaveVehicle} encType="multipart/form-data">
             {contextHolder}
             <div className="space-y-12 w-3/4 sm:px-4">
                 <div className="border-b border-gray-900/10 pb-12">
@@ -341,15 +342,15 @@ export default function AddVehicle() {
                             </label>
                             <div className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-2 py-4">
                                 <div className="text-center">
-                                    <div class="flex-shrink-0 w-50 h-50">
+                                    <div className="flex-shrink-0 w-50 h-50">
                                         {
                                             vehicleImgPreview ?
-                                                <img class="w-full h-full "
+                                                <img className="w-full h-full "
                                                     // src={vehicle._id && bufferToImage(vehicle)}
                                                     src={vehicleImgPreview}
                                                     alt="" />
                                                 :
-                                                <img class="w-full h-full "
+                                                <img className="w-full h-full "
                                                     src={vehicle._id && bufferToImage(vehicle)}
                                                     alt="" />
                                         }

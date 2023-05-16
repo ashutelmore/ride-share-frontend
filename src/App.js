@@ -20,6 +20,7 @@ import Login from "./Pages/Auth/Login";
 import { useAuth } from "./providers/auth";
 import Rides from "./Pages/Ride/Rides";
 import BookRide from "./Booking/BookRide";
+import BookingReq from "./Booking/BookinReq";
 const App = () => {
   const auth = useAuth()
   const [open, setOpen] = useState(false);
@@ -32,7 +33,7 @@ const App = () => {
         <Header />
 
         {/* <VerticalNav /> */}
-        <div class=" mx-auto w-screen">
+        <div className=" mx-auto w-screen">
           <Routes>
 
             <Route
@@ -57,24 +58,104 @@ const App = () => {
             />
 
             <Route
-              path="profile"
+              path="profile/:id?"
               element={
                 auth.user._id ? <Profile /> : <Navigate replace to="/login" />
               }
             />
+            <Route
+              path="booking"
+              element={
+                auth.user._id ? <Booking /> : <Navigate replace to="/login" />
+              }
+            />
+            <Route
+              path="postride"
+              element={
+                auth.user._id && auth.user.role !== 'admin'
+                  ? <PostRide />
+                  : <Navigate replace to="/login" />
+              }
+            />
+            <Route
+              path="rides"
+              element={
+                auth.user._id ? <Rides /> : <Navigate replace to="/login" />
+              }
+            />
+            <Route
+              path="postvehicle"
+              element={
+                auth.user._id && auth.user.role !== 'admin'
+                  ? <AddVehicle />
+
+                  : <Navigate replace to="/login" />
+              }
+            />
+            <Route
+              path="vehicles"
+              element={
+                auth.user._id ? <Vehicles /> : <Navigate replace to="/login" />
+              }
+            />
+            <Route
+              path="bookingreq"
+              element={
+                auth.user._id ? <BookingReq /> : <Navigate replace to="/login" />
+              }
+            />
+
+
+
+
+            <Route
+              path="bookingreq/:id"
+              element={
+                auth.user._id ? <BookingReq /> : <Navigate replace to="/login" />
+              }
+            />
+            <Route
+              path="/postride/:id?"
+              element={
+                auth.user._id ? <PostRide /> : <Navigate replace to="/login" />
+              }
+            />
+            <Route
+              path="/postvehicle/:id?"
+              element={
+                auth.user._id ? <AddVehicle /> : <Navigate replace to="/login" />
+              }
+            />
+            <Route
+              path="customer"
+              element={
+                auth.user._id && auth.user.role === 'admin' ?
+                  <Customer />
+                  :
+                  <Navigate replace to="/login" />
+              }
+            />
 
             <Route path="/" element={<Home />} />
-            <Route path="/profile" element={<Profile />} />
             <Route path="/about" element={<About />} />
             <Route path="/details" element={<Details />} />
-            <Route path="/booking" element={<Booking />} />
-            <Route path="/rides" element={<Rides />} />
             <Route path="/SearchRide" element={<SearchRide />} />
-            <Route path="/postride/:id?" element={<PostRide />} />
-            <Route path="/customer" element={<Customer />} />
-            <Route path="/postvehicle/:id?" element={<AddVehicle />} />
-            <Route path="/vehicles" element={<Vehicles />} />
+            <Route path="/SearchRide/:pickup?/:desti?/:start?/:end?" element={<SearchRide />} />
             <Route path="/bookride/:id" element={<BookRide />} />
+
+
+            {/* <Route path="/booking" element={<Booking />} /> */}
+            {/* <Route path="/rides" element={<Rides />} /> */}
+            {/* <Route path="/vehicles" element={<Vehicles />} /> */}
+
+            {/* <Route path="/bookingreq/:id" element={<BookingReq />} /> */}
+            {/* <Route path="/postride/:id?" element={<PostRide />} /> */}
+            {/* <Route path="/postvehicle/:id?" element={<AddVehicle />} /> */}
+
+
+
+
+            {/* <Route path="/customer" element={<Customer />} /> */}
             {/* <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} /> */}
             <Route path="*" element={<NotFound />} />

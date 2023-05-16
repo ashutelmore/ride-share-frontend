@@ -12,29 +12,49 @@ const user = {
     imageUrl:
         'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
 }
-const navigation = [
-    { name: 'Book Ride', href: '/SearchRide', current: true },
-    { name: 'Home', href: '/', current: false },
-    { name: 'About', href: '/about', current: false },
-    { name: 'Post Ride', href: '/postride', current: false },
-    { name: 'My Rides', href: '/rides', current: false },
-    { name: 'My Customer', href: '/customer', current: false },
-    { name: 'My Bookings', href: '/booking', current: false },
-    { name: 'My Vehicle', href: '/vehicles', current: false },
-    { name: 'Add Vehicle', href: '/postvehicle', current: false },
-]
-const userNavigation = [
-    { name: 'Your Profile', href: '/profile' },
-    { name: 'Sign out', href: '#' },
-]
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
 export default function Header() {
-
     const auth = useAuth()
+
+    let navigation = [
+        { name: 'Book Ride', href: '/SearchRide', current: true },
+        { name: 'Home', href: '/', current: false },
+        { name: 'About', href: '/about', current: false },
+    ]
+
+    if (auth.user._id && auth.user.role === 'admin') {
+        navigation = [
+            { name: 'Book Ride', href: '/SearchRide', current: true },
+            { name: 'Home', href: '/', current: false },
+            { name: 'About', href: '/about', current: false },
+            { name: 'Rides', href: '/rides', current: false },
+            { name: 'Customer', href: '/customer', current: false },
+            { name: 'Bookings', href: '/booking', current: false },
+            { name: 'Vehicle', href: '/vehicles', current: false },
+        ]
+    } else if (auth.user._id) {
+        navigation = [
+            { name: 'Book Ride', href: '/SearchRide', current: true },
+            { name: 'Home', href: '/', current: false },
+            { name: 'About', href: '/about', current: false },
+            { name: 'Post Ride', href: '/postride', current: false },
+            { name: 'Rides', href: '/rides', current: false },
+            { name: 'Bookings', href: '/booking', current: false },
+            { name: 'Vehicle', href: '/vehicles', current: false },
+            { name: 'Add Vehicle', href: '/postvehicle', current: false },
+        ]
+    }
+
+
+    const userNavigation = [
+        { name: 'Your Profile', href: '/profile' },
+        { name: 'Sign out', href: '#' },
+    ]
+
 
     const logout = () => {
         localStorage.removeItem('_id');

@@ -114,7 +114,7 @@ export const deleteVehicles = async (id) => {
 
 export const getVehicles = async (searchQuery) => {
     // console.log('search, sort, postType, type=> ', search, sort, postType, type)
-    const url = `driverId=${searchQuery.driverId || ''}&vehicleId=${searchQuery.vehicleId || ''}`
+    const url = `driverId=${searchQuery.driverId || ''}&vehicleId=${searchQuery.vehicleId || ''}&type=${searchQuery.type || ''}&limit=${searchQuery.limit || ''}`
 
     return await axios.get(`${END_POINT}/getVehicles?${url}`)
         .then(function (response) {

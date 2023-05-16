@@ -107,7 +107,7 @@ export const deleteRides = async (id) => {
 
 export const getRides = async (searchQuery) => {
     // console.log('search, sort, postType, type=> ', search, sort, postType, type)
-    const url = `_id=${searchQuery._id || ''}&vehicleId=${searchQuery.vehicleId || ''}`
+    const url = `_id=${searchQuery._id || ''}&vehicleId=${searchQuery.vehicleId || ''}&driverId=${searchQuery.driverId || ''}`
     console.log('url', url)
     return await axios.get(`${END_POINT}/getRides?${url}`)
         .then(function (response) {
@@ -140,7 +140,7 @@ export const getRides = async (searchQuery) => {
 
 };
 export const searchRides = async (searchQuery) => {
-    const url = `_id=${searchQuery._id || ''}&vehicleId=${searchQuery.vehicleId || ''}&pickup=${searchQuery.pickup || ''}&desti=${searchQuery.desti || ''}&start=${searchQuery.start || ''}&end=${searchQuery.end || ''}`
+    const url = `_id=${searchQuery._id || ''}&vehicleId=${searchQuery.vehicleId || ''}&pickup=${searchQuery.pickup || ''}&desti=${searchQuery.desti || ''}&start=${searchQuery.start || ''}&end=${searchQuery.end || ''}&type=${searchQuery.type || ''}&limit=${searchQuery.limit || ''}`
 
 
     return await axios.get(`${END_POINT}/searchRides?${url}`)

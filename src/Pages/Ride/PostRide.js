@@ -88,6 +88,7 @@ export default function PostRide() {
         }
     };
 
+    //to fetch all list of vehicle to selct
     useEffect(() => {
         const fetchData = async (id) => {
             setLoader({ ...loader, vehicle: true })
@@ -102,6 +103,7 @@ export default function PostRide() {
         fetchData(auth.user._id)
     }, [])
 
+    // fetch one ride if already created
     useEffect(() => {
         const fetchData = async (id) => {
             setLoader({ ...loader, ride: true })

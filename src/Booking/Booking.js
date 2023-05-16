@@ -29,11 +29,17 @@ export default function Booking() {
     })
 
     const auth = useAuth()
-
+    console.log(auth)
     useEffect(() => {
         const fetchData = async (id) => {
             setLoader({ ...loader, booking: true })
-            const res = await getBookings({ passangerId: id })
+            let res
+            if (auth.user.role == 'admin') {
+                res = await getBookings({ role: 'admin' })
+
+            } else {
+                res = await getBookings({ passangerId: id })
+            }
             if (res.error) {
                 showNotification(res.error.errMessage)
                 setLoader({ ...loader, booking: false })
@@ -76,12 +82,12 @@ export default function Booking() {
                     <div>
                         <header className="bg-white shadow">
                             <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-                                <h1 className="text-3xl font-bold tracking-tight text-gray-900">My Bookings</h1>
+                                <h1 className="text-3xl font-bold tracking-tight text-gray-900">My Bookings requests</h1>
                                 {/* <h2 className="text-base font-semibold leading-7 text-gray-900">This information will be displayed publicly so be careful what you share.</h2> */}
                             </div>
                         </header>
                     </div>
-                    <div className="my-2 flex sm:flex-row flex-col">
+                    {/* <div className="my-2 flex sm:flex-row flex-col">
                         <div className="flex flex-row mb-1 sm:mb-0">
                             <div className="relative">
                                 <select
@@ -123,7 +129,7 @@ export default function Booking() {
                             <input placeholder="Search"
                                 className="appearance-none rounded-r rounded-l sm:rounded-l-none border border-gray-400 border-b block pl-8 pr-6 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none" />
                         </div>
-                    </div>
+                    </div> */}
                     <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
                         <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">
                             <table className="min-w-full leading-normal">
@@ -131,15 +137,19 @@ export default function Booking() {
                                     <tr>
                                         <th
                                             className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                            Date
+                                        </th>
+                                        <th
+                                            className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                             Driver Name
                                         </th>
                                         <th
                                             className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                            Pickup Location
+                                            Type of booking
                                         </th>
                                         <th
                                             className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                            Destination Locaton
+                                            Locaton
                                         </th>
                                         <th
                                             className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
@@ -151,7 +161,7 @@ export default function Booking() {
                                         </th>
                                         <th
                                             className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                            End Date
+                                            Pickup time
                                         </th>
                                         <th
                                             className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
@@ -172,39 +182,42 @@ export default function Booking() {
                                             bookings.map((item, i) =>
 
                                                 <tr key={i}>
-                                                    <td class="px-5 py-5 bg-white text-sm">
-                                                        <p class="text-gray-900 whitespace-no-wrap">{item.driverId}</p>
+                                                    <td className="px-5 py-5 bg-white text-sm">
+                                                        <p className="text-gray-900 whitespace-no-wrap">{formatDateToShow(item.updatedAt)}</p>
                                                     </td>
-                                                    <td class="px-5 py-5 bg-white text-sm">
-                                                        <p class="text-gray-900 whitespace-no-wrap">{item.pickupLocation}</p>
+                                                    <td className="px-5 py-5 bg-white text-sm">
+                                                        <p className="text-gray-900 whitespace-no-wrap">{item.driverId.name}</p>
                                                     </td>
-                                                    <td class="px-5 py-5 bg-white text-sm">
-                                                        <p class="text-gray-900 whitespace-no-wrap">{item.destination}</p>
+                                                    <td className="px-5 py-5 bg-white text-sm">
+                                                        <p className="text-gray-900 whitespace-no-wrap">{item.isPrivateBooking ? "Private" : "Ride"}</p>
                                                     </td>
-                                                    <td class="px-5 py-5 bg-white text-sm">
+                                                    <td className="px-5 py-5 bg-white text-sm">
+                                                        <p className="text-gray-900 whitespace-no-wrap">{item.pickupLocation} - {item.destination}</p>
+                                                    </td>
+                                                    <td className="px-5 py-5 bg-white text-sm">
                                                         <span
-                                                            class="relative inline-block px-3 py-1 font-semibold text-red-900 leading-tight">
+                                                            className="relative inline-block px-3 py-1 font-semibold text-red-900 leading-tight">
                                                             <span aria-hidden
-                                                                class="absolute inset-0 bg-red-200 opacity-50 rounded-full"></span>
-                                                            <span class="relative">{item.status}</span>
+                                                                className="absolute inset-0 bg-red-200 opacity-50 rounded-full"></span>
+                                                            <span className="relative">{item.status}</span>
                                                         </span>
                                                     </td>
 
 
-                                                    <td class="px-5 py-5 bg-white text-sm">
-                                                        <p class="text-gray-900 whitespace-no-wrap">{formatDateToShow(item.pickupDate)}</p>
+                                                    <td className="px-5 py-5 bg-white text-sm">
+                                                        <p className="text-gray-900 whitespace-no-wrap">{formatDateToShow(item.pickupDate)}</p>
                                                     </td>
-                                                    <td class="px-5 py-5 bg-white text-sm">
-                                                        <p class="text-gray-900 whitespace-no-wrap">{item.pickupTime}</p>
+                                                    <td className="px-5 py-5 bg-white text-sm">
+                                                        <p className="text-gray-900 whitespace-no-wrap">{item.pickupTime}</p>
                                                     </td>
-                                                    <td class="px-5 py-5 bg-white text-sm">
+                                                    <td className="px-5 py-5 bg-white text-sm">
                                                         <Link
                                                             to={'/bookride/' + item.rideId}
-                                                            class="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-l">
+                                                            className="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-l">
                                                             View/Edit
                                                         </Link>
                                                         <button
-                                                            class="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-r"
+                                                            className="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-r"
                                                             onClick={() => onHandleDelete(item)}
                                                         >
 

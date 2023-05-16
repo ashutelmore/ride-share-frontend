@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import { deleteRides, getRides } from '../../App/RideApi'
-import { useNotify } from '../../Helper/Notify'
-import { useAuth } from '../../providers/auth'
-import { Link } from 'react-router-dom';
-import { formatDateToShow } from '../../Helper/helper';
+import { useNotify } from '../Helper/Notify'
+import { useAuth } from '../providers/auth'
+import { deleteBookings, getBookings, updateBookings } from '../App/BookRideApi'
+import { formatDateToShow } from '../Helper/helper'
+import { Link, useParams } from 'react-router-dom';
 
 
 const header = [
+    'Vehicle Name',
     'Type',
     'Company',
     'Price per KM',
@@ -16,57 +17,143 @@ const header = [
 
 
 
-export default function Rides() {
-    const [rides, setRides] = useState([])
+export default function BookingReq() {
+
+
+    const params = useParams()
+    const [bookings, setBookings] = useState([])
     const [showNotification, contextHolder] = useNotify()
     const [refetch, setRefetch] = useState(false)
     const [loader, setLoader] = useState({
-        vehicle: false
+        vehicle: false,
+        booking: false
     })
 
     const auth = useAuth()
 
-    //fetch all all rides of user
     useEffect(() => {
         const fetchData = async (id) => {
-            setLoader({ ...loader, vehicle: true })
-            let res;
-            if (auth.user.role === 'admin') {
-                res = await getRides({})
-            } else {
-                res = await getRides({ driverId: id })
-            }
+            setLoader({ ...loader, booking: true })
+            const res = await getBookings({ rideId: id, driverId: auth.user._id })
             if (res.error) {
                 showNotification(res.error.errMessage)
-                setLoader({ ...loader, vehicle: false })
+                setLoader({ ...loader, booking: false })
 
             } else if (res.payload) {
-                setRides(res.payload)
+                setBookings(res.payload)
                 showNotification(res.message)
-                setLoader({ ...loader, vehicle: false })
+                setLoader({ ...loader, booking: false })
             }
         };
-        // if (Rides.length <= 0)
-        fetchData(auth.user._id)
+        if (params.id)
+            fetchData(params.id)
     }, [refetch])
+    const bufferToImage = (bufferData) => {
+        return `data:${bufferData.image.contentType};base64, ${Buffer.from(bufferData.image.data.data).toString('base64')}`
+    };
 
-    const onHandleDelete = async (item) => {
 
-        if (!window.confirm("Are sure want to delete")) {
+    const onHandleStatus = async (item, type) => {
+        console.log('item', item, type)
 
-            return
+        let data = {
+            ...item,
         }
+        if (type === 'accepted') {//accept
+            data = {
+                ...data,
+                status: 'accepted'
+            }
+        }
+        else if (type === 'rejected') {
+            // status:cancelled
+            data = {
+                ...data,
+                status: 'rejected'
+            }
 
-        const res = await deleteRides(item._id)
+        } else if (type === 'completed') {
+            // status:completed
+            data = {
+                ...data,
+                status: 'completed'
+            }
+        } else if (type === 'cancelled') {
+            // status:completed
+            data = {
+                ...data,
+                status: 'cancelled'
+            }
+        }
+        onHandleBookRequestUpdate(data)
+    };
+
+    const onHandleBookRequestUpdate = async (data) => {
+
+        const res = await updateBookings(data._id, data)
         console.log('res', res)
         if (res.error) {
             showNotification(res.error.errMessage)
+            setLoader({ ...loader, ride: false })
+
         } else if (res.payload) {
-            setRefetch(!refetch)
             showNotification(res.message)
+            setLoader({ ...loader, ride: false })
+            setRefetch(!refetch)
         }
     };
-    console.log('rides', rides)
+
+
+    const renderStatusBtns = (item) => {
+        console.log('item.status', item.status)
+        if (item.status === 'accepted') {//accept
+            return <td className="px-5 py-5 bg-white text-sm">
+                <button
+                    // to={'/bookride/' + item.rideId}
+                    className="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-l"
+                    onClick={() => onHandleStatus(item, 'completed')}
+                >
+                    completed
+                </button>
+                <button
+                    className="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-r"
+                    onClick={() => onHandleStatus(item, 'cancelled')}
+                >
+
+                    cancelled
+                </button>
+            </td>
+        }
+        else if (item.status === 'completed') {
+            return <td className="px-5 py-5 bg-white text-sm">
+                <button
+                    // to={'/bookride/' + item.rideId}
+                    className="text-sm bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-l"
+                >
+                    completed
+                </button>
+            </td>
+        } else {
+            return <td className="px-5 py-5 bg-white text-sm">
+                <button
+                    // to={'/bookride/' + item.rideId}
+                    className="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-l"
+                    onClick={() => onHandleStatus(item, 'accepted')}
+                >
+                    Accept
+                </button>
+                <button
+                    className="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-r"
+                    onClick={() => onHandleStatus(item, 'rejected')}
+                >
+
+                    Reject
+                </button>
+            </td>
+        }
+    };
+
+    console.log('bookings', bookings)
     return (
         <>
             {contextHolder}
@@ -75,7 +162,7 @@ export default function Rides() {
                     <div>
                         <header className="bg-white shadow">
                             <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-                                <h1 className="text-3xl font-bold tracking-tight text-gray-900">My Rides</h1>
+                                <h1 className="text-3xl font-bold tracking-tight text-gray-900">Booking Requests</h1>
                                 {/* <h2 className="text-base font-semibold leading-7 text-gray-900">This information will be displayed publicly so be careful what you share.</h2> */}
                             </div>
                         </header>
@@ -130,31 +217,31 @@ export default function Rides() {
                                     <tr>
                                         <th
                                             className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                            Vehicle
+                                            Date
                                         </th>
                                         <th
                                             className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                            Type of book
+                                            passanger Name
+                                        </th>
+                                        <th
+                                            className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                            Type
                                         </th>
                                         <th
                                             className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                             Locaton
                                         </th>
-                                        {/* <th
+                                        <th
                                             className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                             Status
-                                        </th> */}
+                                        </th>
                                         <th
                                             className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                             Pickup date
                                         </th>
                                         <th
                                             className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                            End Date
-                                        </th>
-                                        <th
-                                            className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                            Requests
+                                            Pickup time
                                         </th>
                                         <th
                                             className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
@@ -164,7 +251,7 @@ export default function Rides() {
                                 </thead>
                                 <tbody>
                                     {
-                                        rides.length <= 0
+                                        bookings.length <= 0
                                             ?
                                             <tr>
                                                 <td>
@@ -172,55 +259,38 @@ export default function Rides() {
                                                 </td>
                                             </tr>
                                             :
-                                            rides.map((item, i) =>
+                                            bookings.map((item, i) =>
 
                                                 <tr key={i}>
                                                     <td className="px-5 py-5 bg-white text-sm">
-                                                        <p className="text-gray-900 whitespace-no-wrap">{item.vehicleId.vehicleName}</p>
+                                                        <p className="text-gray-900 whitespace-no-wrap">{formatDateToShow(item.updatedAt)}</p>
                                                     </td>
                                                     <td className="px-5 py-5 bg-white text-sm">
-                                                        <p className="text-gray-900 whitespace-no-wrap">{item.vehicleId.isAvailableForBook ? "Private" : "Ride"}</p>
+                                                        <p className="text-gray-900 whitespace-no-wrap">{item.passangerId.name}</p>
                                                     </td>
                                                     <td className="px-5 py-5 bg-white text-sm">
-                                                        <p className="text-gray-900 whitespace-no-wrap">{item.pickupLocation} - {item.destination}</p>
+                                                        <p className="text-gray-900 whitespace-no-wrap">{item.isPrivateBooking ? "Private" : "Ride"}</p>
                                                     </td>
-                                                    {/* <td className="px-5 py-5 bg-white text-sm">
+                                                    <td className="px-5 py-5 bg-white text-sm">
+                                                        <p className="text-gray-900 whitespace-no-wrap">{item.pickupLocation}-{item.destination}</p>
+                                                    </td>
+                                                    <td className="px-5 py-5 bg-white text-sm">
                                                         <span
                                                             className="relative inline-block px-3 py-1 font-semibold text-red-900 leading-tight">
                                                             <span aria-hidden
                                                                 className="absolute inset-0 bg-red-200 opacity-50 rounded-full"></span>
                                                             <span className="relative">{item.status}</span>
                                                         </span>
-                                                    </td> */}
+                                                    </td>
 
 
                                                     <td className="px-5 py-5 bg-white text-sm">
-                                                        <p className="text-gray-900 whitespace-no-wrap">{formatDateToShow(item.startDate)}</p>
+                                                        <p className="text-gray-900 whitespace-no-wrap">{formatDateToShow(item.pickupDate)}</p>
                                                     </td>
                                                     <td className="px-5 py-5 bg-white text-sm">
-                                                        <p className="text-gray-900 whitespace-no-wrap">{formatDateToShow(item.endDate)}</p>
+                                                        <p className="text-gray-900 whitespace-no-wrap">{item.pickupTime}</p>
                                                     </td>
-                                                    <td className="px-5 py-5 bg-white text-sm">
-                                                        <Link
-                                                            to={'/bookingreq/' + item._id}
-                                                            className="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-l">
-                                                            View
-                                                        </Link>
-                                                    </td>
-                                                    <td className="px-5 py-5 bg-white text-sm">
-                                                        <Link
-                                                            to={'/postride/' + item._id}
-                                                            className="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-l">
-                                                            View/Edit
-                                                        </Link>
-                                                        <button
-                                                            className="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-r"
-                                                            onClick={() => onHandleDelete(item)}
-                                                        >
-
-                                                            Delete
-                                                        </button>
-                                                    </td>
+                                                    {renderStatusBtns(item)}
                                                 </tr>
                                             )}
                                 </tbody>

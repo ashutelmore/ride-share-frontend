@@ -292,7 +292,7 @@ background: rgb(220, 73, 48);
     padding: 2rem 7%;
 }
 .inner-test{
-    flex: 1 1 45rem;
+    /* flex: 1 1 45rem; */
     color: white;
     background: black;
     padding: 2rem;
@@ -306,6 +306,7 @@ background: rgb(220, 73, 48);
     align-items: center;
 
 }
+
 .clients h1{
     color: #ffffff;
     margin-left: 1rem;
@@ -418,5 +419,8 @@ footer {
     .background-text h2{
         width: 100%;
         text-align: center;
+    }
+    .clients img{
+        width: 30%;
     }
 }
