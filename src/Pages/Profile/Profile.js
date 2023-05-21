@@ -95,7 +95,7 @@ export default function Profile() {
                 </div>
                 <div className=" pb-12">
                     <div className=" grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                        <div className="sm:col-span-3">
+                        <div className="col-span-3">
                             <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-gray-900">
                                 Full name
                             </label>
@@ -113,7 +113,7 @@ export default function Profile() {
                             <p className="mt-3 text-sm text-left leading-6 text-gray-600">Required.</p>
                         </div>
 
-                        <div className="sm:col-span-3">
+                        <div className="col-span-3">
                             <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
                                 Email address
                             </label>
@@ -183,7 +183,7 @@ export default function Profile() {
                             <p className="mt-3 text-sm text-left leading-6 text-gray-600">Required.</p>
                         </div>
 
-                        <div className="sm:col-span-2 sm:col-start-1">
+                        <div className="col-span-2 sm:col-start-1">
                             <label htmlFor="city" className="block text-sm font-medium leading-6 text-gray-900">
                                 City
                             </label>
@@ -201,7 +201,7 @@ export default function Profile() {
                             <p className="mt-3 text-sm text-left leading-6 text-gray-600">Required.</p>
                         </div>
 
-                        <div className="sm:col-span-2">
+                        <div className="col-span-2">
                             <label htmlFor="region" className="block text-sm font-medium leading-6 text-gray-900">
                                 State / Province
                             </label>
@@ -219,7 +219,7 @@ export default function Profile() {
                             <p className="mt-3 text-sm text-left leading-6 text-gray-600">Required.</p>
                         </div>
 
-                        <div className="sm:col-span-2">
+                        <div className="col-span-2">
                             <label htmlFor="postal-code" className="block text-sm font-medium leading-6 text-gray-900">
                                 ZIP / Postal code
                             </label>
@@ -237,7 +237,7 @@ export default function Profile() {
                             <p className="mt-3 text-sm text-left leading-6 text-gray-600">Required.</p>
                         </div>
 
-                        <div className="sm:col-span-3">
+                        <div className="col-span-3">
                             <label htmlFor="postal-code" className="block text-sm font-medium leading-6 text-gray-900">
                                 Contact number
                             </label>
@@ -254,7 +254,7 @@ export default function Profile() {
                             </div>
                             <p className="mt-3 text-sm text-left leading-6 text-gray-600">Required.</p>
                         </div>
-                        <div className="sm:col-span-3">
+                        <div className="col-span-3">
                             <label htmlFor="postal-code" className="block text-sm font-medium leading-6 text-gray-900">
                                 Date of Birth
                             </label>

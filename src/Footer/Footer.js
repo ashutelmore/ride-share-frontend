@@ -6,9 +6,9 @@ import { Link } from 'react-router-dom'
 export default function Footer() {
     return (
         <>
-            <div className=" mx-auto w-full ">
+            <div className=" mx-auto w-full  relative z-50">
 
-                <footer className="p-4  bg-white rounded-lg shadow md:px-6 md:py-8 dark:bg-gray-800">
+                <footer className="p-4  bg-gray-800 rounded-lg shadow md:px-6 md:py-8 dark:bg-gray-800">
                     <div className="sm:flex sm:items-center sm:justify-between space-y-12 w-3/4 sm:px-4 mx-auto">
                         <Link to={'/notfound'} target="_blank" className="flex items-center mb-4 sm:mb-0">
                             <img src={logogg} className="mr-4 h-8" alt="Flowbite Logo" />

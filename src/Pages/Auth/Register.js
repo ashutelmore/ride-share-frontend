@@ -50,7 +50,7 @@ export default function Register() {
             <form onSubmit={(e) => fetchData(e)}>
 
                 {contextHolder}
-                <div className="space-y-12 w-3/4 sm:px-4 mx-auto">
+                <div className="space-y-12 w-3/4 sm:px-4 mx-auto h-screen">
                     <div className="border-b border-gray-900/10 pb-12">
                         <header className="bg-white shadow">
                             <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
