@@ -5,6 +5,7 @@ import { getUser, updateUser } from '../../App/Api'
 import { useNotify } from '../../Helper/Notify'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
+import { isEmptyObj, isEmptyObject, validateMobileNumber } from '../../Helper/helper'
 
 export default function Profile() {
     const auth = useAuth()
@@ -18,6 +19,22 @@ export default function Profile() {
     console.log('auth', auth)
     const onDetailsSave = async (e) => {
         e.preventDefault()
+
+        let emptyFields = isEmptyObject(userData, ['profilePhoto', 'DOB']);
+        let emptyFieldsAddress = isEmptyObject(userData.address);
+        console.log('userData', userData)
+        console.log('emptyFields', emptyFields)
+
+        if (emptyFields.length > 0 || emptyFieldsAddress.length > 0) {
+            showNotification('Field should not be empty')
+            return
+        }
+
+        if (!validateMobileNumber(userData.phoneNumber)) {
+            showNotification('Please enter valid number')
+            return
+        }
+
         if (!params.id)
             auth.setUser(userData)
         setLoader({ ...loader, user: true })
@@ -93,6 +110,7 @@ export default function Profile() {
                                     onChange={(e) => setUserData({ ...userData, name: e.target.value })}
                                 />
                             </div>
+                            <p className="mt-3 text-sm text-left leading-6 text-gray-600">Required.</p>
                         </div>
 
                         <div className="sm:col-span-3">
@@ -110,6 +128,7 @@ export default function Profile() {
                                     onChange={(e) => setUserData({ ...userData, email: e.target.value })}
                                 />
                             </div>
+                            <p className="mt-3 text-sm text-left leading-6 text-gray-600">Required.</p>
                         </div>
 
                         {/* <div className="sm:col-span-3">
@@ -130,7 +149,23 @@ export default function Profile() {
                             </div>
                         </div> */}
 
-                        <div className="col-span-full">
+                        <div className="col-span-3">
+                            <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
+                                Update Password
+                            </label>
+                            <div className="mt-2">
+                                <input
+                                    type="password"
+                                    name="password"
+                                    id="password"
+                                    autoComplete="password"
+                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    value={userData.password}
+                                    onChange={(e) => setUserData({ ...userData, password: e.target.value })}
+                                />
+                            </div>
+                        </div>
+                        <div className="col-span-3">
                             <label htmlFor="street-address" className="block text-sm font-medium leading-6 text-gray-900">
                                 Street address
                             </label>
@@ -145,6 +180,7 @@ export default function Profile() {
                                     onChange={(e) => setUserData({ ...userData, address: { ...userData.address, streetAdd: e.target.value } })}
                                 />
                             </div>
+                            <p className="mt-3 text-sm text-left leading-6 text-gray-600">Required.</p>
                         </div>
 
                         <div className="sm:col-span-2 sm:col-start-1">
@@ -162,6 +198,7 @@ export default function Profile() {
                                     onChange={(e) => setUserData({ ...userData, address: { ...userData.address, city: e.target.value } })}
                                 />
                             </div>
+                            <p className="mt-3 text-sm text-left leading-6 text-gray-600">Required.</p>
                         </div>
 
                         <div className="sm:col-span-2">
@@ -179,6 +216,7 @@ export default function Profile() {
                                     onChange={(e) => setUserData({ ...userData, address: { ...userData.address, state: e.target.value } })}
                                 />
                             </div>
+                            <p className="mt-3 text-sm text-left leading-6 text-gray-600">Required.</p>
                         </div>
 
                         <div className="sm:col-span-2">
@@ -196,6 +234,7 @@ export default function Profile() {
                                     onChange={(e) => setUserData({ ...userData, address: { ...userData.address, pin: e.target.value } })}
                                 />
                             </div>
+                            <p className="mt-3 text-sm text-left leading-6 text-gray-600">Required.</p>
                         </div>
 
                         <div className="sm:col-span-3">
@@ -204,7 +243,7 @@ export default function Profile() {
                             </label>
                             <div className="mt-2">
                                 <input
-                                    type="text"
+                                    type="number"
                                     name="postal-code"
                                     id="postal-code"
                                     autoComplete="postal-code"
@@ -213,6 +252,7 @@ export default function Profile() {
                                     onChange={(e) => setUserData({ ...userData, phoneNumber: e.target.value })}
                                 />
                             </div>
+                            <p className="mt-3 text-sm text-left leading-6 text-gray-600">Required.</p>
                         </div>
                         <div className="sm:col-span-3">
                             <label htmlFor="postal-code" className="block text-sm font-medium leading-6 text-gray-900">
@@ -229,6 +269,7 @@ export default function Profile() {
                                     onChange={(e) => setUserData({ ...userData, DOB: e.target.value })}
                                 />
                             </div>
+                            {/* <p className="mt-3 text-sm text-left leading-6 text-gray-600">Required.</p> */}
                         </div>
                         <div className="col-span-full space-y-10 w-[200px]">
 

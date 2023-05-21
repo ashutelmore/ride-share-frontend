@@ -4,6 +4,7 @@ import { useNotify } from '../../Helper/Notify'
 import { useAuth } from '../../providers/auth'
 import { formatDateToShow } from '../../Helper/helper'
 import { Link } from 'react-router-dom'
+import { LoaderSmall } from '../../Helper/Loader'
 
 export default function Customer() {
 
@@ -22,10 +23,11 @@ export default function Customer() {
             setLoader({ ...loader, user: true })
             const res = await getAllUser({})
             if (res.error) {
-                // showNotification(res.error.errMessage)
+                showNotification(res.error.errMessage)
                 setLoader({ ...loader, user: false })
 
             } else if (res.payload) {
+                showNotification(res.message)
                 setcustomer(res.payload)
                 setLoader({ ...loader, user: false })
             }
@@ -40,14 +42,16 @@ export default function Customer() {
 
             return
         }
-
+        setLoader({ ...loader, user: true })
         const res = await deleteUser(item._id)
         console.log('res', res)
         if (res.error) {
             showNotification(res.error.errMessage)
+            setLoader({ ...loader, user: false })
         } else if (res.payload) {
             setRefetch(!refetch)
             showNotification(res.message)
+            setLoader({ ...loader, user: false })
         }
     };
     console.log('customer', customer)
@@ -56,12 +60,12 @@ export default function Customer() {
 
     return (
         <>
-            <div className="container mx-auto px-4 sm:px-8">
+            <div className="container mx-auto px-4 sm:px-8 h-screen">
                 <div className="py-8">
                     <div>
                         <header className="bg-white shadow">
                             <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-                                <h1 className="text-3xl font-bold tracking-tight text-gray-900">My Customers</h1>
+                                <h1 className="text-3xl font-bold tracking-tight text-gray-900">Customers</h1>
                                 {/* <h2 className="text-base font-semibold leading-7 text-gray-900">This information will be displayed publicly so be careful what you share.</h2> */}
                             </div>
                         </header>
@@ -111,91 +115,96 @@ export default function Customer() {
                     </div> */}
                     <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
                         <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">
-                            <table className="min-w-full leading-normal">
-                                <thead>
-                                    <tr>
-                                        <th
-                                            className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                            Updated at
-                                        </th>
-                                        <th
-                                            className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                            Name
-                                        </th>
-                                        <th
-                                            className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                            Role
-                                        </th>
-                                        <th
-                                            className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                            Email
-                                        </th>
-                                        <th
-                                            className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                            Contact No.
-                                        </th>
-                                        <th
-                                            className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                            Gender
-                                        </th>
-                                        <th
-                                            className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                            Action
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-
-                                    {
-                                        customer.length <= 0
-                                            ?
+                            {
+                                loader.user ?
+                                    <LoaderSmall />
+                                    :
+                                    <table className="min-w-full leading-normal">
+                                        <thead>
                                             <tr>
-                                                <td>
-                                                    No data found
-                                                </td>
+                                                <th
+                                                    className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                                    Updated at
+                                                </th>
+                                                <th
+                                                    className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                                    Name
+                                                </th>
+                                                <th
+                                                    className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                                    Role
+                                                </th>
+                                                <th
+                                                    className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                                    Email
+                                                </th>
+                                                <th
+                                                    className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                                    Contact No.
+                                                </th>
+                                                <th
+                                                    className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                                    Gender
+                                                </th>
+                                                <th
+                                                    className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                                    Action
+                                                </th>
                                             </tr>
-                                            :
-                                            customer.map((item, i) =>
-                                                <tr key={i}>
-                                                    <td className="px-5 py-5 bg-white text-sm">
-                                                        <p className="text-gray-900 whitespace-no-wrap">
-                                                            {formatDateToShow(item.updatedAt)}
-                                                        </p>
-                                                    </td>
-                                                    <td className="px-5 py-5 bg-white text-sm">
-                                                        <p className="text-gray-900 whitespace-no-wrap">
-                                                            {item.name}
-                                                        </p>
-                                                    </td>
-                                                    <td className="px-5 py-5 bg-white text-sm">
-                                                        <p className="text-gray-900 whitespace-no-wrap">{item.role}</p>
-                                                    </td>
-                                                    <td className="px-5 py-5 bg-white text-sm">
-                                                        <p className="text-gray-900 whitespace-no-wrap">{item.email}</p>
-                                                    </td>
-                                                    <td className="px-5 py-5 bg-white text-sm">
-                                                        <p className="text-gray-900 whitespace-no-wrap">{item.phoneNumber}</p>
-                                                    </td>
-                                                    <td className="px-5 py-5 bg-white text-sm">
-                                                        <p className="text-gray-900 whitespace-no-wrap">{item.gender}</p>
-                                                    </td>
-                                                    <td className="px-5 py-5 bg-white text-sm">
-                                                        <Link
-                                                            to={'/profile/' + item._id}
-                                                            className="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-l">
-                                                            View/Edit
-                                                        </Link>
-                                                        <button
-                                                            onClick={(e) => onHandleDelete(item)}
-                                                            className="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-r">
-                                                            Delete
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            )
-                                    }
-                                </tbody>
-                            </table>
+                                        </thead>
+                                        <tbody>
+
+                                            {
+                                                customer.length <= 0
+                                                    ?
+                                                    <tr>
+                                                        <td>
+                                                            No data found
+                                                        </td>
+                                                    </tr>
+                                                    :
+                                                    customer.map((item, i) =>
+                                                        <tr key={i}>
+                                                            <td className="px-5 py-5 bg-white text-sm">
+                                                                <p className="text-gray-900 whitespace-no-wrap">
+                                                                    {formatDateToShow(item.updatedAt)}
+                                                                </p>
+                                                            </td>
+                                                            <td className="px-5 py-5 bg-white text-sm">
+                                                                <p className="text-gray-900 whitespace-no-wrap">
+                                                                    {item.name}
+                                                                </p>
+                                                            </td>
+                                                            <td className="px-5 py-5 bg-white text-sm">
+                                                                <p className="text-gray-900 whitespace-no-wrap">{item.role}</p>
+                                                            </td>
+                                                            <td className="px-5 py-5 bg-white text-sm">
+                                                                <p className="text-gray-900 whitespace-no-wrap">{item.email}</p>
+                                                            </td>
+                                                            <td className="px-5 py-5 bg-white text-sm">
+                                                                <p className="text-gray-900 whitespace-no-wrap">{item.phoneNumber}</p>
+                                                            </td>
+                                                            <td className="px-5 py-5 bg-white text-sm">
+                                                                <p className="text-gray-900 whitespace-no-wrap">{item.gender}</p>
+                                                            </td>
+                                                            <td className="px-5 py-5 bg-white text-sm">
+                                                                <Link
+                                                                    to={'/profile/' + item._id}
+                                                                    className="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-l">
+                                                                    View/Edit
+                                                                </Link>
+                                                                <button
+                                                                    onClick={(e) => onHandleDelete(item)}
+                                                                    className="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-r">
+                                                                    Delete
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    )
+                                            }
+                                        </tbody>
+                                    </table>
+                            }
                             {/* <div
                                 className="px-5 py-5 bg-white border-t flex flex-col xs:flex-row items-center xs:justify-between          ">
                                 <span className="text-xs xs:text-sm text-gray-900">

@@ -81,14 +81,14 @@ export default function Home() {
 
       <section className="page-section" id="Book Ride"></section>
       <div className="home-container">
-        <div className="home-content ">
-          <div className="inner-content w-1/2">
+        <div className="home-content lg:flex justify-center items-center">
+          <div className="inner-content lg:w-1/2">
             <h3>best in city</h3>
-            <h2>We here for you</h2>
+            <h2>We are here for you</h2>
             <p></p>
             <Link to={"/SearchRide"} className="booknow">book now</Link>
           </div>
-          <div className="inner-content w-1/2">
+          <div className="inner-content lg:w-1/2">
             <div className="contact-form">
               <div className="form-heading">
                 <h1>find a ride</h1>
@@ -106,7 +106,7 @@ export default function Home() {
                   value={search.desti}
                   onChange={(e) => setSearch({ ...search, desti: e.target.value })}
                 />
-                <input
+                {/* <input
                   type="date"
                   placeholder="start"
                   value={search.startDate}
@@ -117,10 +117,10 @@ export default function Home() {
                   placeholder="end"
                   value={search.endDate}
                   onChange={(e) => setSearch({ ...search, endDate: e.target.value })}
-                />
+                /> */}
               </div>
               <div className="submit">
-                <Link to={"/SearchRide/" + search.pickup + '/' + search.desti + '/' + search.startDate + '/' + search.endDate}>Find Ride</Link>
+                <Link to={"/SearchRide/" + search.pickup + '/' + search.desti + '/' + search.startDate + '/' + search.endDate}>Search</Link>
               </div>
 
             </div>
@@ -150,7 +150,7 @@ export default function Home() {
 
       <section className="page-section" id="Vehical">
         <div className="main-tariff">
-          <h1 className="section-heading text-uppercase">Vehical</h1>
+          <h1 className="section-heading text-uppercase">Vehicle</h1>
           <div className="inner-tarrif flex justify-center items-center">
 
             {
@@ -162,7 +162,7 @@ export default function Home() {
                   <div className="inner-box flex flex-col items-center">
                     <img src={item.vehicleId && bufferToImage(item.vehicleId)} alt="" />
                     <h2>{item.vehicleId.vehicleName}</h2>
-                    <h3>price: {item.pricePerKM}  /-</h3>
+                    <h3>price: {item.price}  /-</h3>
                     <Link
                       to={'/bookride/' + item._id}
                     >Book now</Link>
@@ -198,7 +198,7 @@ export default function Home() {
 
       <div className="fast-booking">
         <h1 className="fast-hading">we are best in the city </h1>
-        <h2>Find your Ride and Enjoy</h2>
+        {/* <h2>Find your Ride and Enjoy</h2> */}
         <div className="inner-fast">
           <div className="booking-content">
           </div>
@@ -216,7 +216,8 @@ export default function Home() {
             <p></p>
             <div className="clients">
               <img src={tony} alt="" />
-              <p>As Iron Man, I've experienced some pretty epic modes of transportation, but even I have to admit, there's something special about a good cab ride. With a skilled driver at the wheel, a cab ride can </p>
+              <p>"I have been using this ride-sharing website for my daily commute, and it has been a game-changer. The platform is user-friendly, and I always find reliable drivers who provide a safe and comfortable journey. Highly recommended!" - Sarah
+              </p>
             </div>
           </div>
           <div className="inner-test m-3">
@@ -224,7 +225,8 @@ export default function Home() {
             <p></p>
             <div className="clients">
               <img src={spidy} alt="" />
-              <p>As Spiderman, swinging through the city is my usual mode of transportation. But sometimes, even I need to take a break from my superhero duties and get around like a regular person. That's </p>
+              <p>"As a frequent traveler, I rely on this ride-sharing website to get around in new cities. It's convenient, cost-effective, and the drivers are professional and courteous. I love the flexibility it offers, and it has made my travel experience so much easier." - John
+              </p>
             </div>
           </div>
         </div>

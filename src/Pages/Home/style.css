@@ -79,10 +79,10 @@ html{
 }
 .home-content{
     padding-top: 4rem;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
+    /* display: flex;
+    flex-wrap: wrap; */
+    /* justify-content: center;
+    align-items: center; */
   
 }
 .inner-content{
@@ -118,7 +118,8 @@ background: rgb(220, 73, 48);
     padding: 2rem 0;
 }
 .form-heading h1{
-    color: rgb(244, 250, 130);
+    color: white;
+    font-weight: bold;
 }
 .contact-form{
     /* width: 45rem; */

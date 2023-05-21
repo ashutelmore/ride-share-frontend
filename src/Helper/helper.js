@@ -2,13 +2,16 @@ import React from 'react'
 import { Buffer } from 'buffer';
 
 export const isEmptyObject = (...args) => {
-
+    console.log('args', args)
     const obj = args[0]
+    const exceptArrKey = args[1] || []
     const emptyFields = [];
+
     for (let key in obj) {
+        if (exceptArrKey.includes(key))
+            continue
         if (obj.hasOwnProperty(key)) {
             const value = obj[key];
-
             if (typeof value === 'string' && value.trim() === '') {
                 emptyFields.push(key);
             } else if (value == null) {
@@ -16,6 +19,9 @@ export const isEmptyObject = (...args) => {
             }
 
         }
+    }
+    if (emptyFields.length == 0) {
+        return false
     }
     return emptyFields;
 };
@@ -63,3 +69,35 @@ export const isEmptyObj = (obj) => {
 export const bufferToImage = (bufferData) => {
     return `data:${bufferData.image.contentType};base64, ${Buffer.from(bufferData.image.data.data).toString('base64')}`
 };
+
+export const validatePassword = (password) => {
+    // Password should have at least 8 characters
+    if (password.length < 8) {
+        return false;
+    }
+
+    // Password should contain at least one lowercase letter
+    // if (!/[a-z]/.test(password)) {
+    //     return false;
+    // }
+
+    // // Password should contain at least one uppercase letter
+    // if (!/[A-Z]/.test(password)) {
+    //     return false;
+    // }
+
+    // // Password should contain at least one digit
+    // if (!/[0-9]/.test(password)) {
+    //     return false;
+    // }
+
+    // Password is valid
+    return true;
+}
+export const validateMobileNumber = (number) => {
+    // Password should have at least 8 characters
+
+    var pattern = /^[6-9]\d{9}$/;
+    return pattern.test(number);
+
+}

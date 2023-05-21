@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import { Buffer } from 'buffer';
-import { deleteVehicles, getVehicles } from '../../App/VehicleApi';
+import { deleteVehicles, getVehicles, updateVehicles } from '../../App/VehicleApi';
 import { useAuth } from '../../providers/auth';
 import { useNotify } from '../../Helper/Notify';
 import { Link } from 'react-router-dom';
+import Loader from '../../Helper/Loader';
 
 
 const header = [
     'Vehicle Name',
-    'Type',
-    'Is Available For Booking',
-    'Price per KM',
+    'Driver name',
+    'Aadhar number',
     'Vehicle Number',
+    'R.C. Number',
+    'Status',
     'Action',
 ]
 export default function Vehicles() {
@@ -20,7 +22,8 @@ export default function Vehicles() {
     const [showNotification, contextHolder] = useNotify()
     const [refetch, setRefetch] = useState(false)
     const [loader, setLoader] = useState({
-        vehicle: false
+        vehicle: false,
+        // status:false,
     })
 
     const auth = useAuth()
@@ -69,16 +72,104 @@ export default function Vehicles() {
     };
     console.log('vehicles', vehicles)
 
+    const onHandleStatus = async (item, type) => {
+        console.log('item', item, type)
+
+        let data = {
+            ...item,
+        }
+        if (type === 'approved') {//accept
+            data = {
+                ...data,
+                status: 'approved'
+            }
+        }
+        else if (type === 'rejected') {
+            // status:cancelled
+            data = {
+                ...data,
+                status: 'rejected'
+            }
+
+        }
+        onHandleBookRequestUpdate(data)
+    };
+
+    const onHandleBookRequestUpdate = async (_data) => {
+        const data = {
+            ..._data,
+        }
+
+        console.log('data', data)
+        setLoader({ ...loader, vehicle: true })
+        let formData = new FormData()
+        formData.append('payload', JSON.stringify(data))
+        // formData.append('vehicleImg', undefined)
+        const res = await updateVehicles(data._id, formData)
+        if (res.error) {
+            showNotification(res.error.errMessage)
+            setLoader({ ...loader, vehicle: false })
+
+        } else if (res.payload) {
+            showNotification(res.message)
+            setLoader({ ...loader, vehicle: false })
+            setRefetch(!refetch)
+        }
+    };
+    console.log('loader', loader)
+
+
+    const renderStatusBtns = (item) => {
+        console.log('item.status', item.status)
+        if (item.status === 'Approved') {//accept
+            return <>
+                <button
+                    // to={'/bookride/' + item.rideId}
+                    className="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-l"
+                    onClick={() => onHandleStatus(item, 'completed')}
+                >
+                    Not Approved
+                </button>
+                <button
+                    className="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-r"
+                    onClick={() => onHandleStatus(item, 'cancelled')}
+                >
+
+                    cancelled
+                </button>
+            </>
+        }
+        else {
+            return < >
+                <button
+                    // to={'/bookride/' + item.rideId}
+                    className="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-l"
+                    onClick={() => onHandleStatus(item, 'Approved')}
+                >
+                    Approved
+                </button>
+                <button
+                    className="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-r"
+                    onClick={() => onHandleStatus(item, 'rejected')}
+                >
+
+                    Reject
+                </button>
+            </>
+        }
+    };
+
+
     return (
         <>
             {contextHolder}
-            <div className="container mx-auto px-4 sm:px-8">
+            <div className="container mx-auto px-4 sm:px-8 h-screen">
 
                 <div className="py-8">
                     <div>
                         <header className="bg-white shadow">
                             <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-                                <h1 className="text-3xl font-bold tracking-tight text-gray-900">My Vehicles</h1>
+                                <h1 className="text-3xl font-bold tracking-tight text-gray-900">Vehicles</h1>
                                 {/* <h2 className="text-base font-semibold leading-7 text-gray-900">This information will be displayed publicly so be careful what you share.</h2> */}
                             </div>
                         </header>
@@ -127,85 +218,118 @@ export default function Vehicles() {
                                 className="appearance-none rounded-r rounded-l sm:rounded-l-none border border-gray-400 border-b block pl-8 pr-6 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none" />
                         </div>
                     </div> */}
+
                     <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
                         <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">
-                            <table className="min-w-full leading-normal">
-                                <thead>
-                                    <tr>
-                                        {
-                                            header.map((item, i) =>
-                                                <th
-                                                    className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
-                                                    key={i}
-                                                >
-                                                    {item}
-                                                </th>
-                                            )
-                                        }
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {
-                                        vehicles.length <= 0
-                                            ?
+                            {
+                                loader.vehicle ?
+                                    <Loader />
+
+                                    :
+                                    <table className="min-w-full leading-normal">
+                                        <thead>
                                             <tr>
-                                                <td>
-                                                    No data found
-                                                </td>
-                                            </tr>
-                                            :
-                                            vehicles.map((item, i) =>
-
-                                                <tr key={i}>
-                                                    <td className="px-5 py-5 bg-white text-sm">
-                                                        <div className="flex items-center">
-                                                            <div className="flex-shrink-0 w-10 h-10">
-                                                                <img className="w-full h-full "
-                                                                    src={bufferToImage(item)}
-                                                                    alt="" />
-                                                            </div>
-                                                            <div className="ml-3">
-                                                                <p className="text-gray-900 whitespace-no-wrap">
-                                                                    {item.vehicleName}
-                                                                </p>
-                                                            </div>
-                                                        </div>
-
-                                                    </td>
-                                                    <td className="px-5 py-5 bg-white text-sm">
-                                                        <p className="text-gray-900 whitespace-no-wrap">{item.type}</p>
-                                                    </td>
-                                                    <td className="px-5 py-5 bg-white text-sm">
-                                                        <p className="text-gray-900 whitespace-no-wrap">{item.isAvailableForBook ? "Yes" : "No"}</p>
-                                                    </td>
-                                                    <td className="px-5 py-5 bg-white text-sm">
-                                                        <p className="text-gray-900 whitespace-no-wrap">{item.pricePerKm}</p>
-                                                    </td>
-
-
-                                                    <td className="px-5 py-5 bg-white text-sm">
-                                                        <p className="text-gray-900 whitespace-no-wrap">{item.vehicleNumber}</p>
-                                                    </td>
-                                                    <td className="px-5 py-5 bg-white text-sm">
-                                                        <Link
-                                                            to={'/postvehicle/' + item._id}
-                                                            className="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-l">
-                                                            View/Edit
-                                                        </Link>
-                                                        <button
-                                                            className="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-r"
-                                                            onClick={() => onHandleDelete(item)}
+                                                {
+                                                    header.map((item, i) =>
+                                                        <th
+                                                            className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
+                                                            key={i}
                                                         >
+                                                            {item}
+                                                        </th>
+                                                    )
+                                                }
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                vehicles.length <= 0
+                                                    ?
+                                                    <tr>
+                                                        <td>
+                                                            No data found
+                                                        </td>
+                                                    </tr>
+                                                    :
+                                                    vehicles.map((item, i) =>
 
-                                                            Delete
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            )
-                                    }
+                                                        <tr key={i}>
+                                                            <td className="px-5 py-5 bg-white text-sm">
+                                                                <div className="flex items-center">
+                                                                    <div className="flex-shrink-0 w-10 h-10">
+                                                                        <img className="w-full h-full "
+                                                                            src={bufferToImage(item)}
+                                                                            alt="" />
+                                                                    </div>
+                                                                    <div className="ml-3">
+                                                                        <p className="text-gray-900 whitespace-no-wrap">
+                                                                            {item.vehicleName}
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
 
-                                </tbody>
-                            </table>
+                                                            </td>
+                                                            <td className="px-5 py-5 bg-white text-sm">
+                                                                <p className="text-gray-900 whitespace-no-wrap">{item.driverId.name}</p>
+                                                            </td>
+                                                            <td className="px-5 py-5 bg-white text-sm">
+                                                                <p className="text-gray-900 whitespace-no-wrap">{item.aadharNumber}</p>
+                                                            </td>
+                                                            <td className="px-5 py-5 bg-white text-sm">
+                                                                <p className="text-gray-900 whitespace-no-wrap">{item.vehicleNumber}</p>
+                                                            </td>
+                                                            <td className="px-5 py-5 bg-white text-sm">
+                                                                <p className="text-gray-900 whitespace-no-wrap">{item.rcNumber}</p>
+                                                            </td>
+                                                            <td className="px-5 py-5 bg-white text-sm">
+                                                                <span
+                                                                    className="relative inline-block px-3 py-1 font-semibold text-red-900 leading-tight">
+                                                                    <span aria-hidden
+                                                                        className="absolute inset-0 bg-red-200 opacity-50 rounded-full"></span>
+                                                                    <span className="relative">{item.status}</span>
+                                                                </span>
+                                                            </td>
+                                                            <td className="px-5 py-5  bg-white text-sm">
+                                                                <Link
+                                                                    to={'/postvehicle/' + item._id}
+                                                                    className="text-sm my-2 bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-l">
+                                                                    View/Edit
+                                                                </Link>
+                                                                <button
+                                                                    className="text-sm my-2 bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-r"
+                                                                    onClick={() => onHandleDelete(item)}
+                                                                >
+
+                                                                    Delete
+                                                                </button>
+                                                                {
+                                                                    auth.user.role == 'admin'
+                                                                    &&
+                                                                    <>
+                                                                        <button
+                                                                            // to={'/bookride/' + item.rideId}
+                                                                            className="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-l"
+                                                                            onClick={() => onHandleStatus(item, 'approved')}
+                                                                        >
+                                                                            Approved
+                                                                        </button>
+                                                                        <button
+                                                                            className="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-r"
+                                                                            onClick={() => onHandleStatus(item, 'rejected')}
+                                                                        >
+
+                                                                            Rejected
+                                                                        </button>
+                                                                    </>
+                                                                }
+                                                            </td>
+                                                        </tr>
+                                                    )
+                                            }
+
+                                        </tbody>
+                                    </table>
+                            }
                             {/* <div
                                 className="px-5 py-5 bg-white border-t flex flex-col xs:flex-row items-center xs:justify-between          ">
                                 <span className="text-xs xs:text-sm text-gray-900">
@@ -224,6 +348,7 @@ export default function Vehicles() {
                             </div> */}
                         </div>
                     </div>
+
                 </div>
             </div>
         </>
