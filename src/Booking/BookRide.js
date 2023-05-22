@@ -168,16 +168,17 @@ export default function BookRide({ }) {
     //     }
     // };
 
+    if (!ride._id)
+        return <NotFound
+            heading="No longer exists"
+            descp="This ride seems like deleted by driver"
+        />
     return (
         <>
             {
 
-                !ride._id ?
-
-                    <NotFound
-                        heading="No longer exists"
-                        descp="This ride seems like deleted by driver"
-                    />
+                loader.ride ?
+                    <LoaderSmall />
                     :
                     <section>
                         {contextHolder}

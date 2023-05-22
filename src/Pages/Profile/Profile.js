@@ -97,14 +97,14 @@ export default function Profile() {
                     <div className=" grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                         <div className="col-span-3">
                             <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-gray-900">
-                                Full name
+                                name
                             </label>
                             <div className="mt-2">
                                 <input
                                     type="text"
                                     name="first-name"
                                     id="first-name"
-                                    autoComplete="given-name"
+                                    // autoComplete="given-name"
                                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                     value={userData.name}
                                     onChange={(e) => setUserData({ ...userData, name: e.target.value })}
@@ -112,8 +112,27 @@ export default function Profile() {
                             </div>
                             <p className="mt-3 text-sm text-left leading-6 text-gray-600">Required.</p>
                         </div>
-
-                        <div className="col-span-3">
+                        {
+                            auth.user.role == 'admin'
+                            &&
+                            <div className="col-span-3">
+                                <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-gray-900">
+                                    Role
+                                </label>
+                                <select
+                                    id="type"
+                                    name="type"
+                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    value={userData.role}
+                                    onChange={(e) => setUserData({ ...userData, role: e.target.value })}
+                                >
+                                    <option value={'admin'}>admin</option>
+                                    <option value={'common'}>common</option>
+                                </select>
+                                <p className="mt-3 text-sm leading-6 text-left text-gray-600">Required</p>
+                            </div>
+                        }
+                        <div className="col-span-full">
                             <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
                                 Email address
                             </label>
