@@ -43,6 +43,7 @@ export const createVehicles = async (data) => {
 };
 export const updateVehicles = async (id, data) => {
 
+    console.log('data', data)
 
     return await axios.put(`${END_POINT}/updateVehicles/${id}`,
         data,

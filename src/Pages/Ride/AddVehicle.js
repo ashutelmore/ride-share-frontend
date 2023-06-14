@@ -48,10 +48,16 @@ export default function AddVehicle() {
     const onHandleSaveVehicle = async (e) => {
         e.preventDefault()
         setLoader({ ...loader, vehicle: true })
-        const emptObjList = isEmptyObject(vehicle, ['descp'])
+        const emptObjList = isEmptyObject(vehicle, ['descp', 'rcNumber'])
 
         if (emptObjList.length > 0) {
             showNotification("any Input filed should not empty")
+            setLoader({ ...loader, vehicle: false })
+            return
+        }
+
+        if (vehicle.aadharNumber.length != 12) {
+            showNotification("Aadhar number should be 12 digits")
             setLoader({ ...loader, vehicle: false })
             return
         }
@@ -89,7 +95,10 @@ export default function AddVehicle() {
         formData.append('payload', JSON.stringify(data))
         formData.append('vehicleImg', vehicleImg)
 
-        const res = await updateVehicles(vehicle._id, data)
+        console.log('data', data)
+
+        const res = await updateVehicles(vehicle._id, formData)
+        console.log('res', res)
         if (res.error) {
             showNotification(res.error.errMessage)
             setLoader({ ...loader, vehicle: false })
@@ -218,7 +227,7 @@ export default function AddVehicle() {
 
                                 </div>
 
-                                <div className="sm:col-span-3">
+                                {/* <div className="sm:col-span-3">
                                     <label htmlFor="rcNumber" className="block text-sm font-medium leading-6 text-gray-900">
                                         Vehicle R.C. Number
                                     </label>
@@ -233,8 +242,7 @@ export default function AddVehicle() {
                                         />
                                     </div>
                                     <p className="mt-3 text-sm leading-6 text-left text-gray-600">Required</p>
-
-                                </div>
+                                </div> */}
 
                                 <div className="sm:col-span-3 ">
                                     <label htmlFor="aadharNumber" className="block text-sm font-medium leading-6 text-gray-900">
