@@ -40,7 +40,7 @@ const App = () => {
               path="login"
               element={
                 auth.user._id ? (
-                  <Navigate replace to="/profile" />
+                  <Navigate replace to="/" />
                 ) : (
                   <Login />
                 )
