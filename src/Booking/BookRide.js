@@ -321,8 +321,12 @@ export default function BookRide({ }) {
 
 
                                         </div>
-
-                                        <p className="text-lg font-bold">₹ {ride.price}/seat</p>
+                                        {
+                                            ride.isAvailableForBook ?
+                                                <p className="text-lg font-bold">₹ {ride.price}/KM</p>
+                                                :
+                                                <p className="text-lg font-bold">₹ {ride.price}/seat</p>
+                                        }
                                     </div>
 
                                     <div className="mt-4">

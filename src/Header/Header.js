@@ -41,7 +41,7 @@ export default function Header() {
             { name: 'Book Ride', href: '/SearchRide', current: true },
             { name: 'Home', href: '/', current: false },
             { name: 'About', href: '/about', current: false },
-            { name: 'Post Ride', href: '/postride', current: false },
+            { name: 'Post Ride/Vehicle', href: '/postride', current: false },
             { name: 'Rides', href: '/rides', current: false },
             { name: 'Bookings', href: '/booking', current: false },
             { name: 'Vehicle', href: '/vehicles', current: false },

@@ -149,7 +149,7 @@ export default function PostRide() {
                 <div className="border-b border-gray-900/10 pb-12">
                     <header className="bg-white shadow">
                         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-                            <h1 className="text-3xl font-bold tracking-tight text-gray-900">Post Your Ride</h1>
+                            <h1 className="text-3xl font-bold tracking-tight text-gray-900">Post Your Ride/Vehicle</h1>
                             {/* <h2 className="text-base font-semibold leading-7 text-gray-900">This information will be displayed publicly so be careful what you share.</h2> */}
                         </div>
                     </header>
@@ -159,7 +159,7 @@ export default function PostRide() {
                     <div className=" grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                         <div className="sm:col-span-3">
                             <label htmlFor="country" className="block text-sm font-medium leading-6 text-gray-900">
-                                Is available for private booking
+                                Booking Type
                             </label>
                             <div className="mt-2">
                                 <select
@@ -170,8 +170,8 @@ export default function PostRide() {
                                     onChange={(e) => setRide({ ...ride, isAvailableForBook: JSON.parse(e.target.value) })}
                                 >
                                     {/* <option value={undefined}>Select Option</option> */}
-                                    <option value={false}>No</option>
-                                    <option value={true}>Yes</option>
+                                    <option value={false}>Ride</option>
+                                    <option value={true}>Vehicle</option>
                                 </select>
                             </div>
                             <p className="mt-3 text-sm leading-6 text-gray-600 text-left">Required.</p>
@@ -218,9 +218,17 @@ export default function PostRide() {
 
                         </div>
                         <div className="sm:col-span-3">
-                            <label htmlFor="price" className="block text-sm font-medium leading-6 text-gray-900">
-                                Price per Seat
-                            </label>
+                            {
+                                ride.isAvailableForBook ?
+                                    <label htmlFor="price" className="block text-sm font-medium leading-6 text-gray-900">
+                                        Price per KM
+                                    </label>
+                                    :
+                                    <label htmlFor="price" className="block text-sm font-medium leading-6 text-gray-900">
+                                        Price per Seat
+                                    </label>
+                            }
+
                             <div className="mt-2">
                                 <input
                                     type="number"
