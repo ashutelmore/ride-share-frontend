@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom'
 import { register } from '../../App/Api'
 import { useAuth } from '../../providers/auth'
 import { useNotify } from '../../Helper/Notify'
+import { validatePassword } from '../../Helper/helper'
 
 export default function Register() {
     const [name, setName] = useState('')
@@ -18,6 +19,10 @@ export default function Register() {
     async function fetchData(e) {
         e.preventDefault()
 
+        if (!validatePassword(password)) {
+            showNotification("Please use strong password")
+            return
+        }
         if (password !== confiPass) {
             showNotification("Password does not match")
             return
@@ -45,12 +50,12 @@ export default function Register() {
             <form onSubmit={(e) => fetchData(e)}>
 
                 {contextHolder}
-                <div className="space-y-12 w-3/4 sm:px-4 mx-auto">
+                <div className="space-y-12 w-3/4 sm:px-4 mx-auto h-screen">
                     <div className="border-b border-gray-900/10 pb-12">
                         <header className="bg-white shadow">
                             <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
                                 <h1 className="text-3xl font-bold tracking-tight text-gray-900">Register</h1>
-                                <h2 className="text-base font-semibold leading-7 text-gray-900">This information will be displayed publicly so be careful what you share.</h2>
+                                {/* <h2 className="text-base font-semibold leading-7 text-gray-900">This information will be displayed publicly so be careful what you share.</h2> */}
                             </div>
                         </header>
 
@@ -59,7 +64,7 @@ export default function Register() {
                         <div className=" grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                             <div className="sm:col-span-3">
                                 <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-gray-900">
-                                    Full name
+                                    name
                                 </label>
                                 <div className="mt-2">
                                     <input
@@ -72,6 +77,8 @@ export default function Register() {
                                         onChange={(e) => setName(e.target.value)}
                                     />
                                 </div>
+                                <p className="mt-3 text-sm text-left leading-6 text-gray-600">Required.</p>
+
                             </div>
                             <div className="sm:col-span-3">
                                 <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
@@ -88,6 +95,7 @@ export default function Register() {
                                         onChange={(e) => setEmail(e.target.value)}
                                     />
                                 </div>
+                                <p className="mt-3 text-sm text-left leading-6 text-gray-600">Required.</p>
                             </div>
                             <div className="sm:col-span-3">
                                 <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-gray-900">
@@ -104,6 +112,7 @@ export default function Register() {
                                         onChange={(e) => setPassword(e.target.value)}
                                     />
                                 </div>
+                                <p className="mt-3 text-sm text-left leading-6 text-gray-600">Use strong password.</p>
                             </div>
 
                             <div className="sm:col-span-3">
@@ -121,6 +130,7 @@ export default function Register() {
                                         onChange={(e) => setConfiPass(e.target.value)}
                                     />
                                 </div>
+                                <p className="mt-3 text-sm text-left leading-6 text-gray-600">Use strong password.</p>
                             </div>
                             <div className="sm:col-span-3">
                                 <div className="mt-6 flex items-center justify-start gap-x-6 mb-14">

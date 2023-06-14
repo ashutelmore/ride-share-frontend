@@ -5,6 +5,7 @@ const END_POINT = process.env.REACT_APP_END_POINT
 
 
 export const createVehicles = async (data) => {
+    console.log('data', data)
 
     return await axios.post(`${END_POINT}/createVehicles`,
         data
@@ -114,7 +115,7 @@ export const deleteVehicles = async (id) => {
 
 export const getVehicles = async (searchQuery) => {
     // console.log('search, sort, postType, type=> ', search, sort, postType, type)
-    const url = `driverId=${searchQuery.driverId || ''}&vehicleId=${searchQuery.vehicleId || ''}&type=${searchQuery.type || ''}&limit=${searchQuery.limit || ''}`
+    const url = `driverId=${searchQuery.driverId || ''}&vehicleId=${searchQuery.vehicleId || ''}&type=${searchQuery.type || ''}&limit=${searchQuery.limit || ''}&status=${searchQuery.status || ''}`
 
     return await axios.get(`${END_POINT}/getVehicles?${url}`)
         .then(function (response) {

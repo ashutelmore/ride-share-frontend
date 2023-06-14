@@ -2,7 +2,7 @@
 import { PhotoIcon, UserCircleIcon } from '@heroicons/react/24/solid'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { login } from '../../App/Api'
+import { forgetPassword, login } from '../../App/Api'
 import { useAuth } from '../../providers/auth'
 import { useNotify } from '../../Helper/Notify'
 
@@ -13,7 +13,9 @@ export default function Login() {
     const [password, setPassword] = useState('')
     const [error, setError] = useState('')
     const [showNotification, contextHolder] = useNotify()
-
+    const [loader, setLoader] = useState({
+        forgetPass: false,
+    })
 
     const auth = useAuth()
     async function fetchData(e) {
@@ -35,12 +37,39 @@ export default function Login() {
             localStorage.setItem('_id', res.payload._id)
         }
     }
+    async function onHandleforgetPassword(e) {
+        if (email == '') {
+            showNotification("Email field should not empty")
+            return
+        }
+        // return
+        // auth.setLoading(true)
+        setLoader({ ...loader, forgetPass: true })
+        const res = await forgetPassword({
+            email
+        });
+        console.log('res', res)
+        if (res.error) {
+            //error
+            showNotification(res.error.errMessage)
+            setLoader({ ...loader, forgetPass: false })
+
+            // auth.setLoading(false)
+        } else if (res.payload) {
+            // auth.setUser(res.payload)
+            // auth.setLoading(false)
+            showNotification(res.message)
+            setLoader({ ...loader, forgetPass: false })
+
+            // localStorage.setItem('_id', res.payload._id)
+        }
+    }
     console.log('auth', auth)
 
     return (
         <form onSubmit={(e) => fetchData(e)}>
             {contextHolder}
-            <div className="space-y-12 w-3/4 sm:px-4 mx-auto">
+            <div className="space-y-12 w-3/4 sm:px-4 mx-auto h-screen">
                 <div className="border-b border-gray-900/10 pb-12">
                     <header className="bg-white shadow">
                         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
@@ -70,6 +99,8 @@ export default function Login() {
                                     required
                                 />
                             </div>
+                            <p className="mt-3 text-sm text-left leading-6 text-gray-600">Required.</p>
+
                         </div>
                         <div className="sm:col-span-4">
                             <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-gray-900">
@@ -86,6 +117,15 @@ export default function Login() {
                                     onChange={(e) => setPassword(e.target.value)}
                                 />
                             </div>
+                            {
+                                loader.forgetPass ?
+                                    <p className="mt-3 text-sm text-left leading-6 text-gray-600 cursor-pointer"
+                                    >Loading...</p>
+                                    :
+                                    <p className="mt-3 text-sm text-left leading-6 text-gray-600 cursor-pointer"
+                                        onClick={(e) => onHandleforgetPassword(e)}
+                                    >Forget password.</p>
+                            }
                         </div>
                         <div className="sm:col-span-4 gap-3">
 
@@ -102,13 +142,17 @@ export default function Login() {
                                         loading...
                                     </button>
                                     :
-                                    <button
-                                        className="rounded-md bg-indigo-600 px-3 py-2 text-2xl font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                                        // onClick={() => fetchData()}
-                                        type='submit'
-                                    >
-                                        Login
-                                    </button>
+                                    <>
+
+                                        <button
+                                            className="rounded-md bg-indigo-600 px-3 py-2 text-2xl font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                            // onClick={() => fetchData()}
+                                            type='submit'
+                                        >
+                                            Login
+                                        </button>
+
+                                    </>
                             }
                         </div>
                     </div>

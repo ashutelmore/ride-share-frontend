@@ -77,12 +77,12 @@ export default function Booking() {
     return (
         <>
             {contextHolder}
-            <div className="container mx-auto px-4 sm:px-8">
+            <div className="container mx-auto px-4 sm:px-8 h-screen">
                 <div className="py-8">
                     <div>
                         <header className="bg-white shadow">
                             <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-                                <h1 className="text-3xl font-bold tracking-tight text-gray-900">My Bookings requests</h1>
+                                <h1 className="text-3xl font-bold tracking-tight text-gray-900">Bookings requests history</h1>
                                 {/* <h2 className="text-base font-semibold leading-7 text-gray-900">This information will be displayed publicly so be careful what you share.</h2> */}
                             </div>
                         </header>
@@ -212,7 +212,7 @@ export default function Booking() {
                                                     </td>
                                                     <td className="px-5 py-5 bg-white text-sm">
                                                         <Link
-                                                            to={'/bookride/' + item.rideId}
+                                                            to={'/bookride/' + item.rideId._id}
                                                             className="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-l">
                                                             View/Edit
                                                         </Link>

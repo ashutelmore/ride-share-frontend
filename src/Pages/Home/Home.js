@@ -15,6 +15,8 @@ import { useEffect, useState } from 'react'
 import { getVehicles } from '../../App/VehicleApi'
 import { bufferToImage } from '../../Helper/helper'
 import { getRides, searchRides } from '../../App/RideApi'
+import { useAuth } from '../../providers/auth'
+import Loader from '../../Helper/Loader'
 const features = [
   {
     name: 'Ride Sharing',
@@ -40,7 +42,7 @@ export default function Home() {
 
 
   const [rides, setRides] = useState([])
-
+  const auth = useAuth()
   const [search, setSearch] = useState({
     pickup: '',
     desti: '',
@@ -69,6 +71,9 @@ export default function Home() {
   }, [])
   console.log('rides', rides)
 
+  if (auth.loading)
+    return <Loader />
+
   return (
     <>
       <div className="main-container">
@@ -81,14 +86,14 @@ export default function Home() {
 
       <section className="page-section" id="Book Ride"></section>
       <div className="home-container">
-        <div className="home-content ">
-          <div className="inner-content w-1/2">
+        <div className="home-content lg:flex justify-center items-center">
+          <div className="inner-content lg:w-1/2">
             <h3>best in city</h3>
-            <h2>We here for you</h2>
+            <h2>We are here for you</h2>
             <p></p>
             <Link to={"/SearchRide"} className="booknow">book now</Link>
           </div>
-          <div className="inner-content w-1/2">
+          <div className="inner-content lg:w-1/2">
             <div className="contact-form">
               <div className="form-heading">
                 <h1>find a ride</h1>
@@ -106,7 +111,7 @@ export default function Home() {
                   value={search.desti}
                   onChange={(e) => setSearch({ ...search, desti: e.target.value })}
                 />
-                <input
+                {/* <input
                   type="date"
                   placeholder="start"
                   value={search.startDate}
@@ -117,10 +122,10 @@ export default function Home() {
                   placeholder="end"
                   value={search.endDate}
                   onChange={(e) => setSearch({ ...search, endDate: e.target.value })}
-                />
+                /> */}
               </div>
               <div className="submit">
-                <Link to={"/SearchRide/" + search.pickup + '/' + search.desti + '/' + search.startDate + '/' + search.endDate}>Find Ride</Link>
+                <Link to={"/SearchRide/" + search.pickup + '/' + search.desti + '/' + search.startDate + '/' + search.endDate}>Search</Link>
               </div>
 
             </div>
@@ -150,7 +155,7 @@ export default function Home() {
 
       <section className="page-section" id="Vehical">
         <div className="main-tariff">
-          <h1 className="section-heading text-uppercase">Vehical</h1>
+          <h1 className="section-heading text-uppercase">Vehicle</h1>
           <div className="inner-tarrif flex justify-center items-center">
 
             {
@@ -162,7 +167,7 @@ export default function Home() {
                   <div className="inner-box flex flex-col items-center">
                     <img src={item.vehicleId && bufferToImage(item.vehicleId)} alt="" />
                     <h2>{item.vehicleId.vehicleName}</h2>
-                    <h3>price: {item.pricePerKM}  /-</h3>
+                    <h3>price: {item.price}  /-</h3>
                     <Link
                       to={'/bookride/' + item._id}
                     >Book now</Link>
@@ -198,7 +203,7 @@ export default function Home() {
 
       <div className="fast-booking">
         <h1 className="fast-hading">we are best in the city </h1>
-        <h2>Find your Ride and Enjoy</h2>
+        {/* <h2>Find your Ride and Enjoy</h2> */}
         <div className="inner-fast">
           <div className="booking-content">
           </div>
@@ -216,7 +221,8 @@ export default function Home() {
             <p></p>
             <div className="clients">
               <img src={tony} alt="" />
-              <p>As Iron Man, I've experienced some pretty epic modes of transportation, but even I have to admit, there's something special about a good cab ride. With a skilled driver at the wheel, a cab ride can </p>
+              <p>"I have been using this ride-sharing website for my daily commute, and it has been a game-changer. The platform is user-friendly, and I always find reliable drivers who provide a safe and comfortable journey. Highly recommended!" - Sarah
+              </p>
             </div>
           </div>
           <div className="inner-test m-3">
@@ -224,13 +230,44 @@ export default function Home() {
             <p></p>
             <div className="clients">
               <img src={spidy} alt="" />
-              <p>As Spiderman, swinging through the city is my usual mode of transportation. But sometimes, even I need to take a break from my superhero duties and get around like a regular person. That's </p>
+              <p>"As a frequent traveler, I rely on this ride-sharing website to get around in new cities. It's convenient, cost-effective, and the drivers are professional and courteous. I love the flexibility it offers, and it has made my travel experience so much easier." - John
+              </p>
             </div>
           </div>
         </div>
       </div>
 
+      <div className=" mx-auto w-full">
 
+        <footer className="p-4  bg-gray-800 rounded-lg shadow md:px-6 md:py-8 dark:bg-gray-800">
+          <div className="sm:flex sm:items-center sm:justify-between space-y-12 w-3/4 sm:px-4 mx-auto">
+            <Link to={'#'} target="_blank" className="flex items-center mb-4 sm:mb-0">
+              <img src={logogg} className="mr-4 h-8" alt="Flowbite Logo" />
+              <span className="self-center text-xl font-semibold whitespace-nowrap dark:text-white">EzyRidez</span>
+            </Link>
+            <ul className="flex flex-wrap items-center mb-6 sm:mb-0">
+              <li>
+                <Link to={'/about'} className="mr-4 text-sm text-gray-500 hover:underline md:mr-6 dark:text-gray-400">About</Link>
+              </li>
+              {/* <li>
+                <Link to={'/notfound'} className="mr-4 text-sm text-gray-500 hover:underline md:mr-6 dark:text-gray-400">Privacy
+                    Policy</Link>
+            </li>
+            <li>
+                <Link to={'/notfound'}
+                    className="mr-4 text-sm text-gray-500 hover:underline md:mr-6 dark:text-gray-400">Licensing</Link>
+            </li> */}
+              <li>
+                <Link to={'/about'} className="text-sm text-gray-500 hover:underline dark:text-gray-400">Contact</Link>
+              </li>
+            </ul>
+          </div>
+          <hr className="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
+          <span className="block text-sm text-gray-500 sm:text-center dark:text-gray-400">© 2023
+            <a href="#" target="_blank" className="hover:underline">EzyRidez</a>. All rights Reserved.
+          </span>
+        </footer>
+      </div>
     </>
   )
 }

@@ -4,6 +4,7 @@ import { useAuth } from '../providers/auth'
 import { deleteBookings, getBookings, updateBookings } from '../App/BookRideApi'
 import { formatDateToShow } from '../Helper/helper'
 import { Link, useParams } from 'react-router-dom';
+import { updateRides } from '../App/RideApi'
 
 
 const header = [
@@ -26,15 +27,24 @@ export default function BookingReq() {
     const [refetch, setRefetch] = useState(false)
     const [loader, setLoader] = useState({
         vehicle: false,
-        booking: false
+        booking: false,
+        ride: false,
+
     })
 
     const auth = useAuth()
 
+    //get alll request
     useEffect(() => {
         const fetchData = async (id) => {
             setLoader({ ...loader, booking: true })
-            const res = await getBookings({ rideId: id, driverId: auth.user._id })
+
+            let res
+            if (auth.user.role === 'admin')
+                res = await getBookings({ rideId: id })
+            else
+                res = await getBookings({ rideId: id, driverId: auth.user._id })
+
             if (res.error) {
                 showNotification(res.error.errMessage)
                 setLoader({ ...loader, booking: false })
@@ -45,6 +55,7 @@ export default function BookingReq() {
                 setLoader({ ...loader, booking: false })
             }
         };
+
         if (params.id)
             fetchData(params.id)
     }, [refetch])
@@ -59,11 +70,31 @@ export default function BookingReq() {
         let data = {
             ...item,
         }
+
+        let rideData = {
+            ...item.rideId
+
+        }
+
+        if (type === 'accepted') {
+            rideData = {
+                ...rideData,
+                sits: item.rideId.sits - item.numSits
+            }
+
+        } else {
+            rideData = {
+                ...rideData,
+                sits: item.rideId.sits + item.numSits
+            }
+        }
+
         if (type === 'accepted') {//accept
             data = {
                 ...data,
                 status: 'accepted'
             }
+
         }
         else if (type === 'rejected') {
             // status:cancelled
@@ -72,12 +103,14 @@ export default function BookingReq() {
                 status: 'rejected'
             }
 
+
         } else if (type === 'completed') {
             // status:completed
             data = {
                 ...data,
                 status: 'completed'
             }
+
         } else if (type === 'cancelled') {
             // status:completed
             data = {
@@ -85,9 +118,22 @@ export default function BookingReq() {
                 status: 'cancelled'
             }
         }
+        // return
         onHandleBookRequestUpdate(data)
+        updateRideDetails(rideData)
     };
+    const updateRideDetails = async (ride) => {
 
+        const res = await updateRides(ride._id, ride)
+        if (res.error) {
+            showNotification(res.error.errMessage)
+            setLoader({ ...loader, ride: false })
+
+        } else if (res.payload) {
+            showNotification(res.message)
+            setLoader({ ...loader, ride: false })
+        }
+    };
     const onHandleBookRequestUpdate = async (data) => {
 
         const res = await updateBookings(data._id, data)
@@ -157,7 +203,7 @@ export default function BookingReq() {
     return (
         <>
             {contextHolder}
-            <div className="container mx-auto px-4 sm:px-8">
+            <div className="container mx-auto px-4 sm:px-8 h-screen">
                 <div className="py-8">
                     <div>
                         <header className="bg-white shadow">
@@ -229,7 +275,7 @@ export default function BookingReq() {
                                         </th>
                                         <th
                                             className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                            Locaton
+                                            For Seats
                                         </th>
                                         <th
                                             className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
@@ -272,8 +318,11 @@ export default function BookingReq() {
                                                         <p className="text-gray-900 whitespace-no-wrap">{item.isPrivateBooking ? "Private" : "Ride"}</p>
                                                     </td>
                                                     <td className="px-5 py-5 bg-white text-sm">
-                                                        <p className="text-gray-900 whitespace-no-wrap">{item.pickupLocation}-{item.destination}</p>
+                                                        <p className="text-gray-900 whitespace-no-wrap">{item.numSits}</p>
                                                     </td>
+                                                    {/* <td className="px-5 py-5 bg-white text-sm">
+                                                        <p className="text-gray-900 whitespace-no-wrap">{item.pickupLocation}-{item.destination}</p>
+                                                    </td> */}
                                                     <td className="px-5 py-5 bg-white text-sm">
                                                         <span
                                                             className="relative inline-block px-3 py-1 font-semibold text-red-900 leading-tight">

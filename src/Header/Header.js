@@ -41,7 +41,7 @@ export default function Header() {
             { name: 'Book Ride', href: '/SearchRide', current: true },
             { name: 'Home', href: '/', current: false },
             { name: 'About', href: '/about', current: false },
-            { name: 'Post Ride', href: '/postride', current: false },
+            { name: 'Post Ride/Vehicle', href: '/postride', current: false },
             { name: 'Rides', href: '/rides', current: false },
             { name: 'Bookings', href: '/booking', current: false },
             { name: 'Vehicle', href: '/vehicles', current: false },
@@ -204,18 +204,22 @@ export default function Header() {
                             <Disclosure.Panel className="md:hidden">
                                 <div className="space-y-1 px-2 pb-3 pt-2 sm:px-3">
                                     {navigation.map((item) => (
-                                        <Disclosure.Button
+                                        <NavLink
                                             key={item.name}
-                                            as="a"
-                                            href={item.href}
-                                            className={classNames(
-                                                item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                                                'block rounded-md px-3 py-2 text-base font-medium'
-                                            )}
+                                            to={item.href}
                                             aria-current={item.current ? 'page' : undefined}
                                         >
-                                            {item.name}
-                                        </Disclosure.Button>
+                                            <Disclosure.Button
+                                                // onClick={() => close()}
+                                                className={classNames(
+                                                    item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                                                    'block rounded-md px-3 py-2 text-base font-medium'
+                                                )}
+                                            // aria-current={item.current ? 'page' : undefined}
+                                            >
+                                                {item.name}
+                                            </Disclosure.Button>
+                                        </NavLink>
                                     ))}
                                 </div>
                                 <div className="border-t border-gray-700 pb-3 pt-4">
@@ -230,7 +234,13 @@ export default function Header() {
                                                             'rounded-md px-3 py-2 text-sm font-medium '
                                                         )}
                                                     >
-                                                        Register
+                                                        <Disclosure.Button
+                                                            className="block rounded-md px-3 py-2 text-base font-medium text-white hover:bg-gray-700 hover:text-white"
+
+                                                        >
+
+                                                            Register
+                                                        </Disclosure.Button>
                                                     </Link>
                                                     <Link
                                                         // key={item.name}
@@ -239,37 +249,62 @@ export default function Header() {
                                                             'rounded-md px-3 py-2 text-sm font-medium '
                                                         )}
                                                     >
-                                                        Login
+                                                        <Disclosure.Button
+                                                            className="block rounded-md px-3 py-2 text-base font-medium text-white hover:bg-gray-700 hover:text-white"
+                                                        >
+
+                                                            Login
+                                                        </Disclosure.Button>
                                                     </Link>
                                                 </>
                                                 :
-                                                <Menu.Button className="flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none ">
-                                                    <span className="sr-only">Open user menu</span>
-                                                    <button
-                                                        // key={item.name}
-                                                        // to={item.href}
-                                                        className={classNames(' text-gray-300 bg-gray-700 text-white',
-                                                            'rounded-md px-3 py-2 text-sm font-medium '
-                                                        )}
-                                                    >
-                                                        {auth.user.name}
-                                                    </button>
-                                                </Menu.Button>
+                                                <Menu>
+
+                                                    <Menu.Button className="flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none ">
+                                                        <span className="sr-only">Open user menu</span>
+                                                        <button
+                                                            // key={item.name}
+                                                            // to={item.href}
+                                                            className={classNames(' text-gray-300 bg-gray-700 text-white',
+                                                                'rounded-md px-3 py-2 text-sm font-medium '
+                                                            )}
+                                                        >
+                                                            {auth.user.name}
+                                                        </button>
+                                                    </Menu.Button>
+                                                </Menu>
                                         }
                                     </div>
                                     {
-                                        false &&
+                                        auth.user._id &&
                                         <div className="mt-3 space-y-1 px-2">
-                                            {userNavigation.map((item) => (
+                                            <Link
+                                                to={'/profile'}
+                                                className={classNames(
+                                                    'block px-4 py-2 text-sm text-gray-700'
+                                                )}
+                                            >
                                                 <Disclosure.Button
-                                                    key={item.name}
-                                                    as="a"
-                                                    href={item.href}
+                                                    // key={item.name}
+                                                    as="Link"
+                                                    to={'/profile'}
                                                     className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
                                                 >
-                                                    {item.name}
+                                                    Profile
                                                 </Disclosure.Button>
-                                            ))}
+                                            </Link>
+                                            <button
+                                                className={classNames(
+                                                    'block px-4 py-2 text-sm text-gray-700'
+                                                )}
+                                                onClick={logout}
+                                            >
+                                                <Disclosure.Button
+                                                    className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
+                                                >
+                                                    Logout
+                                                </Disclosure.Button>
+                                            </button>
                                         </div>
                                     }
                                 </div>

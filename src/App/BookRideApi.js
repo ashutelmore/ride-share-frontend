@@ -106,7 +106,6 @@ export const deleteBookings = async (id) => {
 export const getBookings = async (searchQuery) => {
     // console.log('search, sort, postType, type=> ', search, sort, postType, type)
     const url = `bookingId=${searchQuery.bookingId || ''}&rideId=${searchQuery.rideId || ''}&driverId=${searchQuery.driverId || ''}&passangerId=${searchQuery.passangerId || ''}&role=${searchQuery.role || ''}`
-    console.log(url)
     return await axios.get(`${END_POINT}/getBookings?${url}`)
         .then(function (response) {
             return response.data

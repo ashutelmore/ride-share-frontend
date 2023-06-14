@@ -4,6 +4,7 @@ import { useNotify } from '../../Helper/Notify'
 import { useAuth } from '../../providers/auth'
 import { Link } from 'react-router-dom';
 import { formatDateToShow } from '../../Helper/helper';
+import Loader, { LoaderSmall } from '../../Helper/Loader';
 
 
 const header = [
@@ -21,7 +22,7 @@ export default function Rides() {
     const [showNotification, contextHolder] = useNotify()
     const [refetch, setRefetch] = useState(false)
     const [loader, setLoader] = useState({
-        vehicle: false
+        rides: false
     })
 
     const auth = useAuth()
@@ -29,7 +30,7 @@ export default function Rides() {
     //fetch all all rides of user
     useEffect(() => {
         const fetchData = async (id) => {
-            setLoader({ ...loader, vehicle: true })
+            setLoader({ ...loader, rides: true })
             let res;
             if (auth.user.role === 'admin') {
                 res = await getRides({})
@@ -38,12 +39,12 @@ export default function Rides() {
             }
             if (res.error) {
                 showNotification(res.error.errMessage)
-                setLoader({ ...loader, vehicle: false })
+                setLoader({ ...loader, rides: false })
 
             } else if (res.payload) {
                 setRides(res.payload)
                 showNotification(res.message)
-                setLoader({ ...loader, vehicle: false })
+                setLoader({ ...loader, rides: false })
             }
         };
         // if (Rides.length <= 0)
@@ -56,26 +57,28 @@ export default function Rides() {
 
             return
         }
-
+        setLoader({ ...loader, rides: true })
         const res = await deleteRides(item._id)
         console.log('res', res)
         if (res.error) {
             showNotification(res.error.errMessage)
+            setLoader({ ...loader, rides: false })
         } else if (res.payload) {
             setRefetch(!refetch)
             showNotification(res.message)
+            setLoader({ ...loader, rides: false })
         }
     };
     console.log('rides', rides)
     return (
         <>
             {contextHolder}
-            <div className="container mx-auto px-4 sm:px-8">
+            <div className="container mx-auto px-4 sm:px-8 h-screen">
                 <div className="py-8">
                     <div>
                         <header className="bg-white shadow">
                             <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-                                <h1 className="text-3xl font-bold tracking-tight text-gray-900">My Rides</h1>
+                                <h1 className="text-3xl font-bold tracking-tight text-gray-900">Rides</h1>
                                 {/* <h2 className="text-base font-semibold leading-7 text-gray-900">This information will be displayed publicly so be careful what you share.</h2> */}
                             </div>
                         </header>
@@ -125,66 +128,70 @@ export default function Rides() {
                     </div> */}
                     <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
                         <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">
-                            <table className="min-w-full leading-normal">
-                                <thead>
-                                    <tr>
-                                        <th
-                                            className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                            Vehicle
-                                        </th>
-                                        <th
-                                            className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                            Type of book
-                                        </th>
-                                        <th
-                                            className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                            Locaton
-                                        </th>
-                                        {/* <th
+                            {
+                                loader.rides ?
+                                    <LoaderSmall />
+                                    :
+                                    <table className="min-w-full leading-normal">
+                                        <thead>
+                                            <tr>
+                                                <th
+                                                    className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                                    Vehicle
+                                                </th>
+                                                <th
+                                                    className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                                    Type of Ride
+                                                </th>
+                                                <th
+                                                    className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                                    Locaton
+                                                </th>
+                                                {/* <th
                                             className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                             Status
                                         </th> */}
-                                        <th
-                                            className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                            Pickup date
-                                        </th>
-                                        <th
-                                            className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                            End Date
-                                        </th>
-                                        <th
-                                            className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                            Requests
-                                        </th>
-                                        <th
-                                            className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                            Action
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {
-                                        rides.length <= 0
-                                            ?
-                                            <tr>
-                                                <td>
-                                                    No data found
-                                                </td>
+                                                <th
+                                                    className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                                    Pickup date
+                                                </th>
+                                                <th
+                                                    className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                                    Price
+                                                </th>
+                                                <th
+                                                    className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                                    Requests
+                                                </th>
+                                                <th
+                                                    className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                                    Action
+                                                </th>
                                             </tr>
-                                            :
-                                            rides.map((item, i) =>
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                rides.length <= 0
+                                                    ?
+                                                    <tr>
+                                                        <td>
+                                                            No data found
+                                                        </td>
+                                                    </tr>
+                                                    :
+                                                    rides.map((item, i) =>
 
-                                                <tr key={i}>
-                                                    <td className="px-5 py-5 bg-white text-sm">
-                                                        <p className="text-gray-900 whitespace-no-wrap">{item.vehicleId.vehicleName}</p>
-                                                    </td>
-                                                    <td className="px-5 py-5 bg-white text-sm">
-                                                        <p className="text-gray-900 whitespace-no-wrap">{item.vehicleId.isAvailableForBook ? "Private" : "Ride"}</p>
-                                                    </td>
-                                                    <td className="px-5 py-5 bg-white text-sm">
-                                                        <p className="text-gray-900 whitespace-no-wrap">{item.pickupLocation} - {item.destination}</p>
-                                                    </td>
-                                                    {/* <td className="px-5 py-5 bg-white text-sm">
+                                                        <tr key={i}>
+                                                            <td className="px-5 py-5 bg-white text-sm">
+                                                                <p className="text-gray-900 whitespace-no-wrap">{item.vehicleId.vehicleName}</p>
+                                                            </td>
+                                                            <td className="px-5 py-5 bg-white text-sm">
+                                                                <p className="text-gray-900 whitespace-no-wrap">{item.isAvailableForBook ? "Private" : "Ride"}</p>
+                                                            </td>
+                                                            <td className="px-5 py-5 bg-white text-sm">
+                                                                <p className="text-gray-900 whitespace-no-wrap">{item.pickupLocation}   {!item.isAvailableForBook && '-' + item.destination}</p>
+                                                            </td>
+                                                            {/* <td className="px-5 py-5 bg-white text-sm">
                                                         <span
                                                             className="relative inline-block px-3 py-1 font-semibold text-red-900 leading-tight">
                                                             <span aria-hidden
@@ -194,37 +201,38 @@ export default function Rides() {
                                                     </td> */}
 
 
-                                                    <td className="px-5 py-5 bg-white text-sm">
-                                                        <p className="text-gray-900 whitespace-no-wrap">{formatDateToShow(item.startDate)}</p>
-                                                    </td>
-                                                    <td className="px-5 py-5 bg-white text-sm">
-                                                        <p className="text-gray-900 whitespace-no-wrap">{formatDateToShow(item.endDate)}</p>
-                                                    </td>
-                                                    <td className="px-5 py-5 bg-white text-sm">
-                                                        <Link
-                                                            to={'/bookingreq/' + item._id}
-                                                            className="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-l">
-                                                            View
-                                                        </Link>
-                                                    </td>
-                                                    <td className="px-5 py-5 bg-white text-sm">
-                                                        <Link
-                                                            to={'/postride/' + item._id}
-                                                            className="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-l">
-                                                            View/Edit
-                                                        </Link>
-                                                        <button
-                                                            className="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-r"
-                                                            onClick={() => onHandleDelete(item)}
-                                                        >
+                                                            <td className="px-5 py-5 bg-white text-sm">
+                                                                <p className="text-gray-900 whitespace-no-wrap">{!item.isAvailableForBook ? formatDateToShow(item.startDate) : '-'}</p>
+                                                            </td>
+                                                            <td className="px-5 py-5 bg-white text-sm">
+                                                                <p className="text-gray-900 whitespace-no-wrap">{!item.isAvailableForBook ? item.price : '-'}</p>
+                                                            </td>
+                                                            <td className="px-5 py-5 bg-white text-sm">
+                                                                <Link
+                                                                    to={'/bookingreq/' + item._id}
+                                                                    className="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-l">
+                                                                    View
+                                                                </Link>
+                                                            </td>
+                                                            <td className="px-5 py-5 bg-white text-sm">
+                                                                <Link
+                                                                    to={'/postride/' + item._id}
+                                                                    className="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-l">
+                                                                    View/Edit
+                                                                </Link>
+                                                                <button
+                                                                    className="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-r"
+                                                                    onClick={() => onHandleDelete(item)}
+                                                                >
 
-                                                            Delete
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            )}
-                                </tbody>
-                            </table>
+                                                                    Delete
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    )}
+                                        </tbody>
+                                    </table>
+                            }
                             {/* <div
                                 className="px-5 py-5 bg-white border-t flex flex-col xs:flex-row items-center xs:justify-between          ">
                                 <span className="text-xs xs:text-sm text-gray-900">

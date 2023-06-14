@@ -21,6 +21,8 @@ import { useAuth } from "./providers/auth";
 import Rides from "./Pages/Ride/Rides";
 import BookRide from "./Booking/BookRide";
 import BookingReq from "./Booking/BookinReq";
+import ProtectedRout from "./ProtectedRout";
+import VerifyEmail from "./Pages/Auth/VerifyEmail";
 const App = () => {
   const auth = useAuth()
   const [open, setOpen] = useState(false);
@@ -56,85 +58,46 @@ const App = () => {
                 )
               }
             />
-
             <Route
-              path="profile/:id?"
+              path="/:email/:token"
               element={
-                auth.user._id ? <Profile /> : <Navigate replace to="/login" />
+                auth.user.isVerified ? (
+                  <Navigate replace to="/profile" />
+                ) : (
+                  <VerifyEmail />
+                )
               }
             />
             <Route
-              path="booking"
+              path="/VerifyEmail"
               element={
-                auth.user._id ? <Booking /> : <Navigate replace to="/login" />
-              }
-            />
-            <Route
-              path="postride"
-              element={
-                auth.user._id && auth.user.role !== 'admin'
-                  ? <PostRide />
-                  : <Navigate replace to="/login" />
-              }
-            />
-            <Route
-              path="rides"
-              element={
-                auth.user._id ? <Rides /> : <Navigate replace to="/login" />
-              }
-            />
-            <Route
-              path="postvehicle"
-              element={
-                auth.user._id && auth.user.role !== 'admin'
-                  ? <AddVehicle />
-
-                  : <Navigate replace to="/login" />
-              }
-            />
-            <Route
-              path="vehicles"
-              element={
-                auth.user._id ? <Vehicles /> : <Navigate replace to="/login" />
-              }
-            />
-            <Route
-              path="bookingreq"
-              element={
-                auth.user._id ? <BookingReq /> : <Navigate replace to="/login" />
-              }
-            />
-
-
-
-
-            <Route
-              path="bookingreq/:id"
-              element={
-                auth.user._id ? <BookingReq /> : <Navigate replace to="/login" />
-              }
-            />
-            <Route
-              path="/postride/:id?"
-              element={
-                auth.user._id ? <PostRide /> : <Navigate replace to="/login" />
-              }
-            />
-            <Route
-              path="/postvehicle/:id?"
-              element={
-                auth.user._id ? <AddVehicle /> : <Navigate replace to="/login" />
-              }
-            />
-            <Route
-              path="customer"
-              element={
-                auth.user._id && auth.user.role === 'admin' ?
-                  <Customer />
+                !auth.user._id ?
+                  <Navigate replace to="/" />
                   :
-                  <Navigate replace to="/login" />
+                  auth.user.isVerified ? (
+                    <Navigate replace to="/" />
+                  ) : (
+                    <VerifyEmail />
+                  )
               }
             />
+            <Route element={<ProtectedRout />}>
+              <Route path="profile/:id?" element={<Profile />} />
+              <Route path="booking" element={<Booking />} />
+              <Route path="postride" element={<PostRide />} />
+              <Route path="rides" element={<Rides />} />
+              <Route path="postvehicle" element={<AddVehicle />} />
+              <Route path="vehicles" element={<Vehicles />} />
+              <Route path="bookingreq" element={<BookingReq />} />
+              <Route path="bookingreq/:id" element={<BookingReq />} />
+              <Route path="/postride/:id?" element={<PostRide />} />
+              <Route path="/postvehicle/:id?" element={<AddVehicle />} />
+              <Route path="customer" element={<Customer />} />
+            </Route>
+
+            {/* <Route path="/:email/:token" element={<VerifyEmail />} /> */}
+
+
 
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
@@ -159,29 +122,6 @@ const App = () => {
             {/* <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} /> */}
             <Route path="*" element={<NotFound />} />
-
-            {/* <Route
-              path="login"
-              element={
-                auth.user._id ? (
-                  <Navigate replace to="/profile" />
-                ) : (
-                  <LoginForm />
-                )
-              }
-            /> */}
-            {/* <Route
-              path="register"
-              element={
-                auth.user._id ? (
-                  <Navigate replace to="/profile" />
-                ) : (
-                  <Register />
-                )
-              }
-            /> */}
-            {/* <Route path="/register" element={<Register />} /> */}
-            {/* <Route path="/login" element={<LoginForm />} /> */}
 
           </Routes>
         </div>
